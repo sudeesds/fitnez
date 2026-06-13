@@ -1,5 +1,6 @@
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
+import { WhyFounderLed } from './components/WhyFounderLed';
 import { FreeSample } from './components/FreeSample';
 import { Testimonials } from './components/Testimonials';
 import { Pricing } from './components/Pricing';
@@ -13,6 +14,7 @@ export default function App() {
       <Header />
       <main>
         <Hero />
+        <WhyFounderLed />
         <FreeSample />
         <Testimonials />
         <Pricing />
