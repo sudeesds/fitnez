@@ -1,12 +1,12 @@
 export function CTA() {
   return (
-    <section id="cta" className="section-padding bg-warm-900">
+    <section id="cta" className="section-padding gradient-bg">
       <div className="container-wide">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="font-serif text-heading-1 text-cream-50 mb-6">
+          <h2 className="font-serif text-heading-1 text-white mb-6">
             Ready to grow?
           </h2>
-          <p className="text-body-lg text-cream-400 mb-10 leading-relaxed">
+          <p className="text-body-lg text-blue-100/70 mb-10 leading-relaxed">
             Book a 30-minute call and we'll talk strategy — or skip the call
             and ask for a free sample. Either way, coffee's on us.
           </p>
@@ -14,7 +14,7 @@ export function CTA() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="mailto:sijah@atomnecho.com"
-              className="inline-flex items-center gap-2 bg-accent text-cream-50 font-medium px-8 py-4 rounded-full hover:bg-accent-dark transition-colors text-body"
+              className="inline-flex items-center gap-2 bg-white text-blue-900 font-medium px-8 py-4 rounded-full hover:bg-blue-50 transition-colors text-body"
             >
               Book a call
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -23,7 +23,7 @@ export function CTA() {
             </a>
             <a
               href="mailto:sijah@atomnecho.com?subject=Free%20Sample%20Request"
-              className="inline-flex items-center gap-2 bg-transparent border border-cream-500/30 text-cream-200 font-medium px-8 py-4 rounded-full hover:border-cream-400/50 hover:text-cream-50 transition-colors text-body"
+              className="inline-flex items-center gap-2 bg-transparent border border-white/20 text-blue-100 font-medium px-8 py-4 rounded-full hover:border-white/40 hover:text-white transition-colors text-body"
             >
               Ask for a free sample
             </a>

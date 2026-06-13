@@ -5,11 +5,11 @@ export function Hero() {
         <div className="grid md:grid-cols-2 gap-16 md:gap-20 items-start">
           {/* Left — The Big Idea */}
           <div>
-            <p className="text-body-sm text-accent font-medium tracking-wide uppercase mb-6">
+            <p className="text-body-sm font-medium tracking-wide uppercase mb-6 gradient-text">
               The future of B2B marketing
             </p>
             <h1 className="font-serif text-display text-warm-900 mb-8">
-              Founder-led growth<span className="text-accent">.</span>
+              Founder-led growth<span className="gradient-text">.</span>
             </h1>
             <p className="text-body-lg text-warm-600 max-w-lg leading-relaxed">
               The era of faceless brands is over. Your prospects want to hear
@@ -21,7 +21,7 @@ export function Hero() {
 
           {/* Right — What We Actually Do */}
           <div className="md:pt-16">
-            <div className="border-l-2 border-cream-400 pl-8 space-y-10">
+            <div className="border-l-2 border-blue-200 pl-8 space-y-10">
               <div>
                 <h3 className="font-serif text-heading-3 text-warm-900 mb-3">
                   Personal Branding
@@ -32,7 +32,7 @@ export function Hero() {
                   reason to reply to your message.
                 </p>
               </div>
-              <div className="w-12 h-px bg-cream-400" />
+              <div className="w-12 h-px bg-blue-200" />
               <div>
                 <h3 className="font-serif text-heading-3 text-warm-900 mb-3">
                   Lead Generation

@@ -3,11 +3,11 @@ export function About() {
     <section id="about" className="section-padding">
       <div className="container-wide">
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-body-sm text-accent font-medium tracking-wide uppercase mb-4">
+          <p className="text-body-sm font-medium tracking-wide uppercase mb-4 gradient-text">
             About us
           </p>
           <h2 className="font-serif text-heading-1 text-warm-900 mb-8">
-            A small, sharp team in Bengaluru<span className="text-accent">.</span>
+            A small, sharp team in Bengaluru<span className="gradient-text">.</span>
           </h2>
           <p className="text-body-lg text-warm-500 leading-relaxed mb-6">
             We're a focused crew of strategists, writers, and growth operators
@@ -23,17 +23,17 @@ export function About() {
 
           <div className="flex items-center justify-center gap-8 mt-14">
             <div className="text-center">
-              <p className="font-serif text-heading-2 text-warm-900">6</p>
+              <p className="font-serif text-heading-2 gradient-text">6</p>
               <p className="text-body-sm text-warm-400 mt-1">Countries</p>
             </div>
             <div className="w-px h-10 bg-cream-400" />
             <div className="text-center">
-              <p className="font-serif text-heading-2 text-warm-900">30+</p>
+              <p className="font-serif text-heading-2 gradient-text">30+</p>
               <p className="text-body-sm text-warm-400 mt-1">Founders served</p>
             </div>
             <div className="w-px h-10 bg-cream-400" />
             <div className="text-center">
-              <p className="font-serif text-heading-2 text-warm-900">2M+</p>
+              <p className="font-serif text-heading-2 gradient-text">2M+</p>
               <p className="text-body-sm text-warm-400 mt-1">Prospects reached</p>
             </div>
           </div>

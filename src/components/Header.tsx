@@ -19,8 +19,8 @@ export function Header() {
     >
       <div className="container-wide flex items-center justify-between px-6 md:px-12 lg:px-20 py-5">
         <a href="#" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-            <span className="text-cream-50 font-serif font-medium text-sm">A</span>
+          <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+            <span className="text-white font-serif font-medium text-sm">A</span>
           </div>
           <span className="font-serif text-xl text-warm-900 tracking-tight">
             Atom & Echo
@@ -44,7 +44,7 @@ export function Header() {
 
         <a
           href="#cta"
-          className="hidden md:inline-flex items-center gap-2 bg-warm-900 text-cream-50 text-body-sm font-medium px-5 py-2.5 rounded-full hover:bg-warm-800 transition-colors"
+          className="hidden md:inline-flex items-center gap-2 gradient-btn text-body-sm font-medium px-5 py-2.5 rounded-full"
         >
           Book a call
         </a>

@@ -16,7 +16,7 @@
   }
 
   ::selection {
-    @apply bg-accent/20 text-warm-900;
+    @apply bg-blue-500/20 text-warm-900;
   }
 }
 
@@ -27,6 +27,30 @@
 
   .container-wide {
     @apply max-w-7xl mx-auto;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #1D4ED8 0%, #3B82F6 50%, #60A5FA 100%);
+  }
+
+  .gradient-btn {
+    background: linear-gradient(135deg, #0A1628 0%, #1D4ED8 60%, #3B82F6 100%);
+    @apply text-white;
+    transition: all 0.3s ease;
+  }
+
+  .gradient-btn:hover {
+    background: linear-gradient(135deg, #0A1628 0%, #1340A0 50%, #2563EB 100%);
+    box-shadow: 0 8px 32px rgba(29, 78, 216, 0.25);
+  }
+
+  .gradient-bg {
+    background: linear-gradient(135deg, #030B1A 0%, #0F2145 40%, #1D4ED8 100%);
+  }
+
+  .gradient-bg-subtle {
+    background: linear-gradient(135deg, #0A1628 0%, #13386E 100%);
   }
 }
 
@@ -53,10 +77,10 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background: #C4653A;
+    background: linear-gradient(135deg, #1D4ED8, #3B82F6);
     cursor: pointer;
     border: 3px solid #FAF7F2;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 6px rgba(29, 78, 216, 0.3);
     transition: transform 0.15s ease;
   }
 
@@ -68,10 +92,10 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background: #C4653A;
+    background: linear-gradient(135deg, #1D4ED8, #3B82F6);
     cursor: pointer;
     border: 3px solid #FAF7F2;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 6px rgba(29, 78, 216, 0.3);
   }
 
   .slider-thumb {
@@ -82,14 +106,5 @@
     border-radius: 2px;
     background: #E0D5C4;
     outline: none;
-  }
-
-  .globe-dot {
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .globe-dot.active {
-    r: 6;
-    fill: #C4653A;
   }
 }

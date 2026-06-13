@@ -6,13 +6,12 @@ export function FreeSample() {
   return (
     <section id="sample" className="section-padding bg-cream-50">
       <div className="container-wide">
-        {/* Section intro */}
         <div className="max-w-2xl mb-20">
-          <p className="text-body-sm text-accent font-medium tracking-wide uppercase mb-4">
+          <p className="text-body-sm font-medium tracking-wide uppercase mb-4 gradient-text">
             Skip the sales pitch
           </p>
           <h2 className="font-serif text-heading-1 text-warm-900 mb-6">
-            Try before you buy<span className="text-accent">.</span>
+            Try before you buy<span className="gradient-text">.</span>
           </h2>
           <p className="text-body-lg text-warm-500">
             Process decks and case study PDFs are boring. Instead, we'll give
@@ -21,13 +20,12 @@ export function FreeSample() {
           </p>
         </div>
 
-        {/* Toggle */}
         <div className="flex gap-3 mb-12">
           <button
             onClick={() => setActiveTab('branding')}
             className={`px-5 py-2.5 rounded-full text-body-sm font-medium transition-all ${
               activeTab === 'branding'
-                ? 'bg-warm-900 text-cream-50'
+                ? 'gradient-btn'
                 : 'bg-cream-200 text-warm-600 hover:bg-cream-300'
             }`}
           >
@@ -37,7 +35,7 @@ export function FreeSample() {
             onClick={() => setActiveTab('leadgen')}
             className={`px-5 py-2.5 rounded-full text-body-sm font-medium transition-all ${
               activeTab === 'leadgen'
-                ? 'bg-warm-900 text-cream-50'
+                ? 'gradient-btn'
                 : 'bg-cream-200 text-warm-600 hover:bg-cream-300'
             }`}
           >
@@ -45,14 +43,14 @@ export function FreeSample() {
           </button>
         </div>
 
-        {/* Content */}
         <div className="grid md:grid-cols-2 gap-10">
           {activeTab === 'branding' ? (
             <>
-              {/* Sample Post Preview */}
               <div className="bg-white rounded-2xl p-8 border border-cream-300/60 shadow-sm">
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-full bg-cream-300" />
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                    <span className="text-white text-sm font-medium">Y</span>
+                  </div>
                   <div>
                     <p className="text-body-sm font-medium text-warm-900">Your Name</p>
                     <p className="text-xs text-warm-400">Founder & CEO at Your Company</p>
@@ -83,7 +81,6 @@ export function FreeSample() {
                 </div>
               </div>
 
-              {/* CTA side */}
               <div className="flex flex-col justify-center">
                 <h3 className="font-serif text-heading-2 text-warm-900 mb-4">
                   Two posts, on us.
@@ -95,21 +92,21 @@ export function FreeSample() {
                 </p>
                 <div className="space-y-3 mb-8">
                   <div className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2.5 shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2.5 shrink-0" />
                     <p className="text-body-sm text-warm-600">Written in your authentic voice — not generic AI slop</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2.5 shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2.5 shrink-0" />
                     <p className="text-body-sm text-warm-600">Strategically crafted to attract your ideal prospects</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2.5 shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2.5 shrink-0" />
                     <p className="text-body-sm text-warm-600">No strings attached — seriously</p>
                   </div>
                 </div>
                 <a
                   href="#cta"
-                  className="inline-flex items-center gap-2 bg-accent text-cream-50 font-medium px-6 py-3 rounded-full hover:bg-accent-dark transition-colors w-fit"
+                  className="inline-flex items-center gap-2 gradient-btn font-medium px-6 py-3 rounded-full w-fit"
                 >
                   Get your free posts
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-px">
@@ -120,7 +117,6 @@ export function FreeSample() {
             </>
           ) : (
             <>
-              {/* Campaign Preview */}
               <div className="bg-white rounded-2xl p-8 border border-cream-300/60 shadow-sm">
                 <p className="text-body-sm text-warm-400 uppercase tracking-wide mb-6">Sample Campaign Results</p>
                 <div className="space-y-6">
@@ -129,7 +125,7 @@ export function FreeSample() {
                       <p className="text-body-sm text-warm-500 mb-1">Prospects Reached</p>
                       <p className="text-heading-2 font-serif text-warm-900">1,247</p>
                     </div>
-                    <p className="text-body-sm text-accent font-medium">14 days</p>
+                    <p className="text-body-sm gradient-text font-medium">14 days</p>
                   </div>
                   <div className="flex justify-between items-end border-b border-cream-200 pb-4">
                     <div>
@@ -143,19 +139,18 @@ export function FreeSample() {
                       <p className="text-body-sm text-warm-500 mb-1">Positive Replies</p>
                       <p className="text-heading-2 font-serif text-warm-900">43</p>
                     </div>
-                    <p className="text-body-sm text-accent font-medium">3.4% reply rate</p>
+                    <p className="text-body-sm gradient-text font-medium">3.4% reply rate</p>
                   </div>
                   <div className="flex justify-between items-end">
                     <div>
                       <p className="text-body-sm text-warm-500 mb-1">Meetings Booked</p>
                       <p className="text-heading-2 font-serif text-warm-900">18</p>
                     </div>
-                    <p className="text-body-sm text-accent font-medium">from cold outreach</p>
+                    <p className="text-body-sm gradient-text font-medium">from cold outreach</p>
                   </div>
                 </div>
               </div>
 
-              {/* CTA side */}
               <div className="flex flex-col justify-center">
                 <h3 className="font-serif text-heading-2 text-warm-900 mb-4">
                   A free pilot campaign.
@@ -167,21 +162,21 @@ export function FreeSample() {
                 </p>
                 <div className="space-y-3 mb-8">
                   <div className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2.5 shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2.5 shrink-0" />
                     <p className="text-body-sm text-warm-600">Real outreach to real prospects in your target market</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2.5 shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2.5 shrink-0" />
                     <p className="text-body-sm text-warm-600">Multi-channel — cold email + LinkedIn in sync</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2.5 shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2.5 shrink-0" />
                     <p className="text-body-sm text-warm-600">Full transparency — you see every message we send</p>
                   </div>
                 </div>
                 <a
                   href="#cta"
-                  className="inline-flex items-center gap-2 bg-accent text-cream-50 font-medium px-6 py-3 rounded-full hover:bg-accent-dark transition-colors w-fit"
+                  className="inline-flex items-center gap-2 gradient-btn font-medium px-6 py-3 rounded-full w-fit"
                 >
                   Start free campaign
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-px">
