@@ -1,31 +1,25 @@
-import { useState } from 'react';
-import { FitnessProvider } from './context/FitnessContext';
-import { Layout } from './components/Layout';
-import { Dashboard } from './components/Dashboard';
-import { StepsTracker } from './components/StepsTracker';
-import { WorkoutLogger } from './components/WorkoutLogger';
-import { NutritionTracker } from './components/NutritionTracker';
-import { ProgressCharts } from './components/ProgressCharts';
-import { TabName } from './types';
+import { Header } from './components/Header';
+import { Hero } from './components/Hero';
+import { FreeSample } from './components/FreeSample';
+import { Testimonials } from './components/Testimonials';
+import { Pricing } from './components/Pricing';
+import { About } from './components/About';
+import { CTA } from './components/CTA';
+import { Footer } from './components/Footer';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabName>('dashboard');
-
-  const renderTab = () => {
-    switch (activeTab) {
-      case 'dashboard':   return <Dashboard onNavigate={setActiveTab} />;
-      case 'steps':       return <StepsTracker />;
-      case 'workouts':    return <WorkoutLogger />;
-      case 'nutrition':   return <NutritionTracker />;
-      case 'progress':    return <ProgressCharts />;
-    }
-  };
-
   return (
-    <FitnessProvider>
-      <Layout activeTab={activeTab} onTabChange={setActiveTab}>
-        {renderTab()}
-      </Layout>
-    </FitnessProvider>
+    <>
+      <Header />
+      <main>
+        <Hero />
+        <FreeSample />
+        <Testimonials />
+        <Pricing />
+        <About />
+        <CTA />
+      </main>
+      <Footer />
+    </>
   );
 }
