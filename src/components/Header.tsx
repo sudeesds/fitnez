@@ -22,29 +22,43 @@ export function Header() {
           <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
             <span className="text-white font-serif font-medium text-sm">A</span>
           </div>
-          <span className="font-serif text-xl text-warm-900 tracking-tight">
+          <span className={`font-serif text-xl tracking-tight transition-colors duration-500 ${
+            scrolled ? 'text-warm-900' : 'text-white'
+          }`}>
             Atom & Echo
           </span>
         </a>
 
         <nav className="hidden md:flex items-center gap-10">
-          <a href="#sample" className="text-body-sm text-warm-600 hover:text-warm-900 transition-colors">
+          <a href="#sample" className={`text-body-sm transition-colors ${
+            scrolled ? 'text-warm-600 hover:text-warm-900' : 'text-white/60 hover:text-white'
+          }`}>
             Free Sample
           </a>
-          <a href="#testimonials" className="text-body-sm text-warm-600 hover:text-warm-900 transition-colors">
+          <a href="#testimonials" className={`text-body-sm transition-colors ${
+            scrolled ? 'text-warm-600 hover:text-warm-900' : 'text-white/60 hover:text-white'
+          }`}>
             Clients
           </a>
-          <a href="#pricing" className="text-body-sm text-warm-600 hover:text-warm-900 transition-colors">
+          <a href="#pricing" className={`text-body-sm transition-colors ${
+            scrolled ? 'text-warm-600 hover:text-warm-900' : 'text-white/60 hover:text-white'
+          }`}>
             Pricing
           </a>
-          <a href="#about" className="text-body-sm text-warm-600 hover:text-warm-900 transition-colors">
+          <a href="#about" className={`text-body-sm transition-colors ${
+            scrolled ? 'text-warm-600 hover:text-warm-900' : 'text-white/60 hover:text-white'
+          }`}>
             About
           </a>
         </nav>
 
         <a
           href="#cta"
-          className="hidden md:inline-flex items-center gap-2 gradient-btn text-body-sm font-medium px-5 py-2.5 rounded-full"
+          className={`hidden md:inline-flex items-center gap-2 text-body-sm font-medium px-5 py-2.5 rounded-full transition-all duration-500 ${
+            scrolled
+              ? 'gradient-btn'
+              : 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+          }`}
         >
           Book a call
         </a>

@@ -52,6 +52,10 @@
   .gradient-bg-subtle {
     background: linear-gradient(135deg, #0A1628 0%, #13386E 100%);
   }
+
+  .gradient-hero {
+    background: linear-gradient(160deg, #020810 0%, #081630 35%, #0F2145 60%, #142E5C 80%, #1A3A6E 100%);
+  }
 }
 
 @layer utilities {
