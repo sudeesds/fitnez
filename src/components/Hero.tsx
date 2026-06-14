@@ -3,22 +3,16 @@ import { useState, useEffect, useCallback } from 'react';
 type Phase = 'branding' | 'outbound' | 'results';
 
 const PHASE_DURATION = 3500;
-const TRANSITION_MS = 600;
 const PHASES: Phase[] = ['branding', 'outbound', 'results'];
 
 export function Hero() {
   const [mounted, setMounted] = useState(false);
   const [phaseIndex, setPhaseIndex] = useState(0);
-  const [transitioning, setTransitioning] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
   const advance = useCallback(() => {
-    setTransitioning(true);
-    setTimeout(() => {
-      setPhaseIndex(i => (i + 1) % PHASES.length);
-      setTransitioning(false);
-    }, TRANSITION_MS);
+    setPhaseIndex(i => (i + 1) % PHASES.length);
   }, []);
 
   useEffect(() => {
@@ -92,45 +86,39 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right — Looping card carousel */}
-          <div className={`relative min-h-[440px] flex items-start pt-8 transition-all duration-1000 delay-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+          {/* Right — Rotating card carousel */}
+          <div className={`transition-all duration-1000 delay-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
 
-            {/* Phase dots */}
-            <div className="absolute -top-1 left-0 right-0 flex justify-center gap-2 z-20">
-              {PHASES.map((p, i) => (
-                <button
-                  key={p}
-                  onClick={() => { setTransitioning(true); setTimeout(() => { setPhaseIndex(i); setTransitioning(false); }, TRANSITION_MS); }}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${
-                    i === phaseIndex ? 'w-8 bg-blue-400' : 'w-1.5 bg-white/20 hover:bg-white/30'
-                  }`}
-                />
-              ))}
+            {/* Top badge */}
+            <div className="flex justify-center mb-5">
+              <div className="bg-blue-500/10 backdrop-blur border border-blue-400/20 rounded-full px-5 py-2 flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 1v12M1 7h12" stroke="#60A5FA" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                <p className="text-xs text-blue-300/80 font-medium">Brand + Outbound = Compounding Growth</p>
+              </div>
             </div>
 
-            {/* Card container with shadow sweep */}
-            <div className="relative w-full max-w-md mx-auto">
-              {/* Shadow sweep overlay */}
-              <div className={`absolute inset-0 z-30 pointer-events-none rounded-2xl overflow-hidden ${transitioning ? 'hero-shadow-sweep' : ''}`}>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-100%]"
-                  style={transitioning ? { animation: 'shadowSweep 0.6s ease-in-out forwards' } : {}} />
-              </div>
+            {/* Fixed-height card container with perspective for 3D rotation */}
+            <div className="relative w-full max-w-md mx-auto h-[420px]" style={{ perspective: '1200px' }}>
 
               {/* Branding card */}
-              <div className={`transition-all duration-500 ${
-                phase === 'branding' && !transitioning ? 'opacity-100 scale-100' : ''
-              } ${transitioning ? 'opacity-0 scale-[0.97]' : ''} ${
-                phase !== 'branding' && !transitioning ? 'hidden' : ''
-              }`}>
-                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden">
+              <div
+                className="absolute inset-0 backface-hidden transition-transform duration-700 ease-in-out"
+                style={{
+                  transform: phase === 'branding' ? 'rotateY(0deg)' : 'rotateY(-90deg)',
+                  transformOrigin: 'center center',
+                  backfaceVisibility: 'hidden',
+                }}
+              >
+                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
                   <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
                     <div className="w-3 h-3 rounded-full bg-red-400" />
                     <div className="w-3 h-3 rounded-full bg-amber-400" />
                     <div className="w-3 h-3 rounded-full bg-emerald-400" />
                     <span className="ml-3 text-[11px] text-gray-400 font-mono">linkedin post</span>
                   </div>
-
-                  <div className="p-6">
+                  <div className="p-6 flex-1">
                     <div className="flex items-center gap-3 mb-5">
                       <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
                         <span className="text-white font-semibold text-sm">S</span>
@@ -140,13 +128,11 @@ export function Hero() {
                         <p className="text-[11px] text-gray-400">CEO at Nexvoy · 2h · 🌍</p>
                       </div>
                     </div>
-
                     <p className="text-[13.5px] text-gray-700 leading-relaxed">
                       The era of faceless brands is over. Your prospects want to hear from you — the founder, the expert, the human behind the company.
                       <br /><br />
                       That's the unfair advantage waiting to be unlocked. We help you build it.
                     </p>
-
                     <div className="flex items-center gap-5 pt-4 mt-5 border-t border-gray-100">
                       <div className="flex items-center gap-1.5">
                         <div className="flex -space-x-1">
@@ -160,7 +146,6 @@ export function Hero() {
                       <span className="text-[11px] text-gray-400">89 reposts</span>
                     </div>
                   </div>
-
                   <div className="bg-blue-50 border-t border-blue-100 px-5 py-2.5 flex items-center gap-2">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                       <path d="M2 7.5l3 3 7-7" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -171,25 +156,26 @@ export function Hero() {
               </div>
 
               {/* Outbound card */}
-              <div className={`transition-all duration-500 ${
-                phase === 'outbound' && !transitioning ? 'opacity-100 scale-100' : ''
-              } ${transitioning ? 'opacity-0 scale-[0.97]' : ''} ${
-                phase !== 'outbound' && !transitioning ? 'hidden' : ''
-              }`}>
-                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden">
+              <div
+                className="absolute inset-0 backface-hidden transition-transform duration-700 ease-in-out"
+                style={{
+                  transform: phase === 'outbound' ? 'rotateY(0deg)' : phase === 'branding' ? 'rotateY(90deg)' : 'rotateY(-90deg)',
+                  transformOrigin: 'center center',
+                  backfaceVisibility: 'hidden',
+                }}
+              >
+                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
                   <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
                     <div className="w-3 h-3 rounded-full bg-red-400" />
                     <div className="w-3 h-3 rounded-full bg-amber-400" />
                     <div className="w-3 h-3 rounded-full bg-emerald-400" />
                     <span className="ml-3 text-[11px] text-gray-400 font-mono">compose email</span>
                   </div>
-
-                  <div className="p-6">
+                  <div className="p-6 flex-1">
                     <p className="text-[12px] text-gray-400 mb-1">To: Sarah Jennings</p>
                     <p className="text-[14px] font-semibold text-gray-900 mb-5">
                       Subject: Saw the Series B — congrats
                     </p>
-
                     <p className="text-[13.5px] text-gray-700 leading-relaxed">
                       Hey Sarah,
                       <br /><br />
@@ -200,7 +186,6 @@ export function Hero() {
                       Cheers,<br />Nick
                     </p>
                   </div>
-
                   <div className="bg-emerald-50 border-t border-emerald-100 px-5 py-2.5 flex items-center gap-2">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                       <path d="M2 7.5l3 3 7-7" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -211,20 +196,22 @@ export function Hero() {
               </div>
 
               {/* Results card */}
-              <div className={`transition-all duration-500 ${
-                phase === 'results' && !transitioning ? 'opacity-100 scale-100' : ''
-              } ${transitioning ? 'opacity-0 scale-[0.97]' : ''} ${
-                phase !== 'results' && !transitioning ? 'hidden' : ''
-              }`}>
-                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden">
+              <div
+                className="absolute inset-0 backface-hidden transition-transform duration-700 ease-in-out"
+                style={{
+                  transform: phase === 'results' ? 'rotateY(0deg)' : 'rotateY(90deg)',
+                  transformOrigin: 'center center',
+                  backfaceVisibility: 'hidden',
+                }}
+              >
+                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
                   <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
                     <div className="w-3 h-3 rounded-full bg-red-400" />
                     <div className="w-3 h-3 rounded-full bg-amber-400" />
                     <div className="w-3 h-3 rounded-full bg-emerald-400" />
                     <span className="ml-3 text-[11px] text-gray-400 font-mono">campaign dashboard</span>
                   </div>
-
-                  <div className="p-6">
+                  <div className="p-6 flex-1">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -232,7 +219,6 @@ export function Hero() {
                       </div>
                       <span className="text-[10px] text-gray-400 uppercase tracking-wider font-medium bg-gray-100 px-2.5 py-1 rounded-full">Founder-Led Growth</span>
                     </div>
-
                     <div className="grid grid-cols-2 gap-4 mb-5">
                       <div className="bg-blue-50 rounded-xl p-4">
                         <p className="text-[10px] text-blue-500 font-medium uppercase tracking-wider mb-1">Branding</p>
@@ -245,7 +231,6 @@ export function Hero() {
                         <p className="text-[11px] text-gray-400 mt-0.5">Reply rate</p>
                       </div>
                     </div>
-
                     <div className="grid grid-cols-3 gap-3">
                       <div className="text-center p-3 bg-gray-50 rounded-lg">
                         <p className="font-serif text-xl text-gray-900">22</p>
@@ -261,7 +246,6 @@ export function Hero() {
                       </div>
                     </div>
                   </div>
-
                   <div className="bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-2.5 flex items-center gap-2">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                       <path d="M2 7.5l3 3 7-7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -271,8 +255,21 @@ export function Hero() {
                 </div>
               </div>
 
-              {/* Ambient card shadow */}
+              {/* Ambient glow behind card */}
               <div className="absolute -inset-4 -z-10 rounded-3xl bg-blue-500/[0.08] blur-2xl" />
+            </div>
+
+            {/* Phase dots */}
+            <div className="flex justify-center gap-2 mt-5">
+              {PHASES.map((p, i) => (
+                <button
+                  key={p}
+                  onClick={() => setPhaseIndex(i)}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${
+                    i === phaseIndex ? 'w-8 bg-blue-400' : 'w-1.5 bg-white/20 hover:bg-white/30'
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </div>
