@@ -1,18 +1,54 @@
 import { useState, useEffect, useCallback } from 'react';
 
-type Phase = 'branding' | 'outbound' | 'results';
-
 const PHASE_DURATION = 3500;
-const PHASES: Phase[] = ['branding', 'outbound', 'results'];
+const CARDS = ['branding', 'outbound', 'results'] as const;
+
+function getCardStyle(cardIndex: number, activeIndex: number) {
+  const total = CARDS.length;
+  let offset = cardIndex - activeIndex;
+  if (offset > 1) offset -= total;
+  if (offset < -1) offset += total;
+
+  if (offset === 0) {
+    return {
+      transform: 'translateX(0%) scale(1)',
+      opacity: 1,
+      zIndex: 10,
+      filter: 'none',
+    };
+  }
+  if (offset === 1) {
+    return {
+      transform: 'translateX(75%) scale(0.85)',
+      opacity: 0.35,
+      zIndex: 5,
+      filter: 'brightness(0.6)',
+    };
+  }
+  if (offset === -1) {
+    return {
+      transform: 'translateX(-75%) scale(0.85)',
+      opacity: 0.35,
+      zIndex: 5,
+      filter: 'brightness(0.6)',
+    };
+  }
+  return {
+    transform: 'translateX(0%) scale(0.8)',
+    opacity: 0,
+    zIndex: 0,
+    filter: 'brightness(0.5)',
+  };
+}
 
 export function Hero() {
   const [mounted, setMounted] = useState(false);
-  const [phaseIndex, setPhaseIndex] = useState(0);
+  const [active, setActive] = useState(0);
 
   useEffect(() => { setMounted(true); }, []);
 
   const advance = useCallback(() => {
-    setPhaseIndex(i => (i + 1) % PHASES.length);
+    setActive(i => (i + 1) % CARDS.length);
   }, []);
 
   useEffect(() => {
@@ -21,7 +57,7 @@ export function Hero() {
     return () => clearInterval(id);
   }, [mounted, advance]);
 
-  const phase = PHASES[phaseIndex];
+  const phase = CARDS[active];
 
   return (
     <section className="relative min-h-screen overflow-hidden gradient-hero">
@@ -86,30 +122,34 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right — Rotating card carousel */}
-          <div className={`transition-all duration-1000 delay-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+          {/* Right — Carousel */}
+          <div className={`transition-all duration-1000 delay-500 overflow-hidden py-4 -my-4 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
 
-            {/* Top badge */}
-            <div className="flex justify-center mb-5">
-              <div className="bg-blue-500/10 backdrop-blur border border-blue-400/20 rounded-full px-5 py-2 flex items-center gap-2">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M7 1v12M1 7h12" stroke="#60A5FA" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
-                <p className="text-xs text-blue-300/80 font-medium">Brand + Outbound = Compounding Growth</p>
+            {/* Badge with highlighted words */}
+            <div className="flex justify-center mb-6">
+              <div className="bg-white/[0.04] backdrop-blur border border-white/[0.08] rounded-full px-5 py-2.5 flex items-center gap-1.5 text-xs font-medium">
+                <span className={`px-2 py-0.5 rounded-full transition-all duration-500 ${
+                  phase === 'branding' ? 'bg-blue-500/20 text-blue-300' : 'text-white/25'
+                }`}>Brand</span>
+                <span className="text-white/15">+</span>
+                <span className={`px-2 py-0.5 rounded-full transition-all duration-500 ${
+                  phase === 'outbound' ? 'bg-emerald-500/20 text-emerald-300' : 'text-white/25'
+                }`}>Outbound</span>
+                <span className="text-white/15">=</span>
+                <span className={`px-2 py-0.5 rounded-full transition-all duration-500 ${
+                  phase === 'results' ? 'bg-white/15 text-white' : 'text-white/25'
+                }`}>Growth</span>
               </div>
             </div>
 
-            {/* Fixed-height card container with perspective for 3D rotation */}
-            <div className="relative w-full max-w-md mx-auto h-[420px]" style={{ perspective: '1200px' }}>
+            {/* Carousel container */}
+            <div className="relative w-full max-w-md mx-auto h-[420px]">
 
               {/* Branding card */}
               <div
-                className="absolute inset-0 backface-hidden transition-transform duration-700 ease-in-out"
-                style={{
-                  transform: phase === 'branding' ? 'rotateY(0deg)' : 'rotateY(-90deg)',
-                  transformOrigin: 'center center',
-                  backfaceVisibility: 'hidden',
-                }}
+                className="absolute inset-0 transition-all duration-700 ease-in-out cursor-pointer"
+                style={getCardStyle(0, active)}
+                onClick={() => setActive(0)}
               >
                 <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
                   <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
@@ -120,7 +160,7 @@ export function Hero() {
                   </div>
                   <div className="p-6 flex-1">
                     <div className="flex items-center gap-3 mb-5">
-                      <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                      <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shrink-0">
                         <span className="text-white font-semibold text-sm">S</span>
                       </div>
                       <div>
@@ -128,7 +168,7 @@ export function Hero() {
                         <p className="text-[11px] text-gray-400">CEO at Nexvoy · 2h · 🌍</p>
                       </div>
                     </div>
-                    <p className="text-[13.5px] text-gray-700 leading-relaxed">
+                    <p className="text-[13px] text-gray-700 leading-relaxed">
                       The era of faceless brands is over. Your prospects want to hear from you — the founder, the expert, the human behind the company.
                       <br /><br />
                       That's the unfair advantage waiting to be unlocked. We help you build it.
@@ -150,19 +190,16 @@ export function Hero() {
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                       <path d="M2 7.5l3 3 7-7" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    <span className="text-[12px] text-blue-600 font-medium">Top voice in B2B Sales — 40 inbound leads/month</span>
+                    <span className="text-[12px] text-blue-600 font-medium">Top voice — 40 inbound leads/month</span>
                   </div>
                 </div>
               </div>
 
               {/* Outbound card */}
               <div
-                className="absolute inset-0 backface-hidden transition-transform duration-700 ease-in-out"
-                style={{
-                  transform: phase === 'outbound' ? 'rotateY(0deg)' : phase === 'branding' ? 'rotateY(90deg)' : 'rotateY(-90deg)',
-                  transformOrigin: 'center center',
-                  backfaceVisibility: 'hidden',
-                }}
+                className="absolute inset-0 transition-all duration-700 ease-in-out cursor-pointer"
+                style={getCardStyle(1, active)}
+                onClick={() => setActive(1)}
               >
                 <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
                   <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
@@ -176,7 +213,7 @@ export function Hero() {
                     <p className="text-[14px] font-semibold text-gray-900 mb-5">
                       Subject: Saw the Series B — congrats
                     </p>
-                    <p className="text-[13.5px] text-gray-700 leading-relaxed">
+                    <p className="text-[13px] text-gray-700 leading-relaxed">
                       Hey Sarah,
                       <br /><br />
                       Congrats on the Series B — saw the announcement on LinkedIn. With the growth push, I imagine outbound is top of mind.
@@ -190,19 +227,16 @@ export function Hero() {
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                       <path d="M2 7.5l3 3 7-7" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    <span className="text-[12px] text-emerald-600 font-medium">Delivered to primary inbox — 22% reply rate</span>
+                    <span className="text-[12px] text-emerald-600 font-medium">Primary inbox — 22% reply rate</span>
                   </div>
                 </div>
               </div>
 
               {/* Results card */}
               <div
-                className="absolute inset-0 backface-hidden transition-transform duration-700 ease-in-out"
-                style={{
-                  transform: phase === 'results' ? 'rotateY(0deg)' : 'rotateY(90deg)',
-                  transformOrigin: 'center center',
-                  backfaceVisibility: 'hidden',
-                }}
+                className="absolute inset-0 transition-all duration-700 ease-in-out cursor-pointer"
+                style={getCardStyle(2, active)}
+                onClick={() => setActive(2)}
               >
                 <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
                   <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
@@ -217,13 +251,13 @@ export function Hero() {
                         <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                         <span className="text-sm font-semibold text-gray-900">Campaign Live</span>
                       </div>
-                      <span className="text-[10px] text-gray-400 uppercase tracking-wider font-medium bg-gray-100 px-2.5 py-1 rounded-full">Founder-Led Growth</span>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider font-medium bg-gray-100 px-2.5 py-1 rounded-full">Founder-Led</span>
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-5">
                       <div className="bg-blue-50 rounded-xl p-4">
                         <p className="text-[10px] text-blue-500 font-medium uppercase tracking-wider mb-1">Branding</p>
                         <p className="font-serif text-2xl text-gray-900">4,218</p>
-                        <p className="text-[11px] text-gray-400 mt-0.5">Avg. impressions/post</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">Impressions/post</p>
                       </div>
                       <div className="bg-emerald-50 rounded-xl p-4">
                         <p className="text-[10px] text-emerald-500 font-medium uppercase tracking-wider mb-1">Outbound</p>
@@ -234,11 +268,11 @@ export function Hero() {
                     <div className="grid grid-cols-3 gap-3">
                       <div className="text-center p-3 bg-gray-50 rounded-lg">
                         <p className="font-serif text-xl text-gray-900">22</p>
-                        <p className="text-[10px] text-gray-400 mt-0.5">Calls booked</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Calls</p>
                       </div>
                       <div className="text-center p-3 bg-gray-50 rounded-lg">
                         <p className="font-serif text-xl text-gray-900">6</p>
-                        <p className="text-[10px] text-gray-400 mt-0.5">Deals closed</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Deals</p>
                       </div>
                       <div className="text-center p-3 bg-gray-50 rounded-lg">
                         <p className="font-serif text-xl text-gray-900">$284k</p>
@@ -255,18 +289,18 @@ export function Hero() {
                 </div>
               </div>
 
-              {/* Ambient glow behind card */}
-              <div className="absolute -inset-4 -z-10 rounded-3xl bg-blue-500/[0.08] blur-2xl" />
+              {/* Ambient glow */}
+              <div className="absolute -inset-6 -z-10 rounded-3xl bg-blue-500/[0.06] blur-2xl" />
             </div>
 
             {/* Phase dots */}
-            <div className="flex justify-center gap-2 mt-5">
-              {PHASES.map((p, i) => (
+            <div className="flex justify-center gap-2 mt-6">
+              {CARDS.map((_, i) => (
                 <button
-                  key={p}
-                  onClick={() => setPhaseIndex(i)}
+                  key={i}
+                  onClick={() => setActive(i)}
                   className={`h-1.5 rounded-full transition-all duration-500 ${
-                    i === phaseIndex ? 'w-8 bg-blue-400' : 'w-1.5 bg-white/20 hover:bg-white/30'
+                    i === active ? 'w-8 bg-blue-400' : 'w-1.5 bg-white/20 hover:bg-white/30'
                   }`}
                 />
               ))}
