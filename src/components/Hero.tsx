@@ -1,51 +1,33 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-type Phase = 'branding' | 'swap-to-outbound' | 'outbound' | 'swap-to-results' | 'results';
+type Phase = 'branding' | 'outbound' | 'results';
 
-function useTypingEffect(text: string, active: boolean, speed = 25) {
-  const [displayed, setDisplayed] = useState('');
-  const indexRef = useRef(0);
-
-  useEffect(() => {
-    if (!active) { setDisplayed(''); indexRef.current = 0; return; }
-    const id = setInterval(() => {
-      indexRef.current++;
-      setDisplayed(text.slice(0, indexRef.current));
-      if (indexRef.current >= text.length) clearInterval(id);
-    }, speed);
-    return () => clearInterval(id);
-  }, [text, active, speed]);
-
-  return displayed;
-}
+const PHASE_DURATION = 3500;
+const TRANSITION_MS = 600;
+const PHASES: Phase[] = ['branding', 'outbound', 'results'];
 
 export function Hero() {
   const [mounted, setMounted] = useState(false);
-  const [phase, setPhase] = useState<Phase>('branding');
+  const [phaseIndex, setPhaseIndex] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
+  const advance = useCallback(() => {
+    setTransitioning(true);
+    setTimeout(() => {
+      setPhaseIndex(i => (i + 1) % PHASES.length);
+      setTransitioning(false);
+    }, TRANSITION_MS);
+  }, []);
+
   useEffect(() => {
     if (!mounted) return;
-    const timers = [
-      setTimeout(() => setPhase('branding'), 800),
-      setTimeout(() => setPhase('swap-to-outbound'), 4500),
-      setTimeout(() => setPhase('outbound'), 5000),
-      setTimeout(() => setPhase('swap-to-results'), 8500),
-      setTimeout(() => setPhase('results'), 9200),
-    ];
-    return () => timers.forEach(clearTimeout);
-  }, [mounted]);
+    const id = setInterval(advance, PHASE_DURATION);
+    return () => clearInterval(id);
+  }, [mounted, advance]);
 
-  const brandingText = "The era of faceless brands is over. Your prospects want to hear from you — the founder, the expert, the human behind the company.\n\nThat's the unfair advantage waiting to be unlocked. We help you build it.";
-  const outboundText = "Hey Sarah,\n\nCongrats on the Series B — saw the announcement on LinkedIn. With the growth push, I imagine outbound is top of mind.\n\nWe just helped a similar SaaS company book 40+ meetings in 6 weeks. Happy to share the playbook if useful.\n\nCheers,\nNick";
-
-  const brandingTyped = useTypingEffect(brandingText, phase === 'branding', 20);
-  const outboundTyped = useTypingEffect(outboundText, phase === 'outbound', 18);
-
-  const showBranding = phase === 'branding' || phase === 'swap-to-outbound';
-  const showOutbound = phase === 'outbound' || phase === 'swap-to-results';
-  const showResults = phase === 'results';
+  const phase = PHASES[phaseIndex];
 
   return (
     <section className="relative min-h-screen overflow-hidden gradient-hero">
@@ -110,176 +92,188 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right — Animated card sequence */}
-          <div className="relative min-h-[420px] flex items-center">
+          {/* Right — Looping card carousel */}
+          <div className={`relative min-h-[440px] flex items-start pt-8 transition-all duration-1000 delay-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
 
-            {/* Phase indicator pills */}
-            <div className={`absolute -top-2 left-0 right-0 flex justify-center gap-3 transition-all duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
-              <span className={`text-[10px] font-medium tracking-wider uppercase px-3 py-1 rounded-full transition-all duration-500 ${
-                showBranding ? 'bg-blue-500/20 text-blue-300 border border-blue-400/30' : 'text-blue-200/20'
-              }`}>Personal Branding</span>
-              <span className="text-blue-200/15 text-xs self-center">+</span>
-              <span className={`text-[10px] font-medium tracking-wider uppercase px-3 py-1 rounded-full transition-all duration-500 ${
-                showOutbound ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/30' : 'text-blue-200/20'
-              }`}>Outbound</span>
-              <span className="text-blue-200/15 text-xs self-center">=</span>
-              <span className={`text-[10px] font-medium tracking-wider uppercase px-3 py-1 rounded-full transition-all duration-500 ${
-                showResults ? 'bg-white/10 text-white border border-white/20' : 'text-blue-200/20'
-              }`}>Growth</span>
+            {/* Phase dots */}
+            <div className="absolute -top-1 left-0 right-0 flex justify-center gap-2 z-20">
+              {PHASES.map((p, i) => (
+                <button
+                  key={p}
+                  onClick={() => { setTransitioning(true); setTimeout(() => { setPhaseIndex(i); setTransitioning(false); }, TRANSITION_MS); }}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${
+                    i === phaseIndex ? 'w-8 bg-blue-400' : 'w-1.5 bg-white/20 hover:bg-white/30'
+                  }`}
+                />
+              ))}
             </div>
 
-            {/* LinkedIn / Branding card */}
-            <div className={`absolute inset-x-0 top-10 transition-all duration-500 ${
-              showBranding
-                ? (phase === 'swap-to-outbound' ? 'opacity-0 -translate-x-8 scale-95' : 'opacity-100 translate-x-0 scale-100')
-                : 'opacity-0 translate-x-8 scale-95 pointer-events-none'
-            }`}>
-              <div className="bg-white rounded-2xl shadow-2xl shadow-black/25 overflow-hidden max-w-md mx-auto">
-                {/* Window chrome */}
-                <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <div className="w-3 h-3 rounded-full bg-amber-400" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                  <span className="ml-3 text-[11px] text-gray-400 font-mono">linkedin post</span>
-                </div>
+            {/* Card container with shadow sweep */}
+            <div className="relative w-full max-w-md mx-auto">
+              {/* Shadow sweep overlay */}
+              <div className={`absolute inset-0 z-30 pointer-events-none rounded-2xl overflow-hidden ${transitioning ? 'hero-shadow-sweep' : ''}`}>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-100%]"
+                  style={transitioning ? { animation: 'shadowSweep 0.6s ease-in-out forwards' } : {}} />
+              </div>
 
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
-                      <span className="text-white font-semibold text-sm">S</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">Sarah Mitchell</p>
-                      <p className="text-[11px] text-gray-400">CEO at Nexvoy · 2h · 🌍</p>
-                    </div>
+              {/* Branding card */}
+              <div className={`transition-all duration-500 ${
+                phase === 'branding' && !transitioning ? 'opacity-100 scale-100' : ''
+              } ${transitioning ? 'opacity-0 scale-[0.97]' : ''} ${
+                phase !== 'branding' && !transitioning ? 'hidden' : ''
+              }`}>
+                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden">
+                  <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                    <div className="w-3 h-3 rounded-full bg-red-400" />
+                    <div className="w-3 h-3 rounded-full bg-amber-400" />
+                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                    <span className="ml-3 text-[11px] text-gray-400 font-mono">linkedin post</span>
                   </div>
 
-                  <p className="text-[13.5px] text-gray-700 leading-relaxed whitespace-pre-line min-h-[120px]">
-                    {brandingTyped}
-                    <span className="inline-block w-0.5 h-4 bg-blue-500 ml-0.5 animate-pulse align-text-bottom" />
-                  </p>
-
-                  <div className="flex items-center gap-5 pt-4 mt-5 border-t border-gray-100">
-                    <div className="flex items-center gap-1.5">
-                      <div className="flex -space-x-1">
-                        <div className="w-[18px] h-[18px] rounded-full bg-blue-500" />
-                        <div className="w-[18px] h-[18px] rounded-full bg-red-500" />
-                        <div className="w-[18px] h-[18px] rounded-full bg-yellow-500" />
+                  <div className="p-6">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                        <span className="text-white font-semibold text-sm">S</span>
                       </div>
-                      <span className="text-[11px] text-gray-400 ml-1">4,218</span>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">Sarah Mitchell</p>
+                        <p className="text-[11px] text-gray-400">CEO at Nexvoy · 2h · 🌍</p>
+                      </div>
                     </div>
-                    <span className="text-[11px] text-gray-400">312 comments</span>
-                    <span className="text-[11px] text-gray-400">89 reposts</span>
-                  </div>
-                </div>
 
-                {/* Bottom success bar */}
-                <div className="bg-blue-50 border-t border-blue-100 px-5 py-2.5 flex items-center gap-2">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M2 7.5l3 3 7-7" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span className="text-[12px] text-blue-600 font-medium">Top voice in B2B Sales — 40 inbound leads/month</span>
+                    <p className="text-[13.5px] text-gray-700 leading-relaxed">
+                      The era of faceless brands is over. Your prospects want to hear from you — the founder, the expert, the human behind the company.
+                      <br /><br />
+                      That's the unfair advantage waiting to be unlocked. We help you build it.
+                    </p>
+
+                    <div className="flex items-center gap-5 pt-4 mt-5 border-t border-gray-100">
+                      <div className="flex items-center gap-1.5">
+                        <div className="flex -space-x-1">
+                          <div className="w-[18px] h-[18px] rounded-full bg-blue-500" />
+                          <div className="w-[18px] h-[18px] rounded-full bg-red-500" />
+                          <div className="w-[18px] h-[18px] rounded-full bg-yellow-500" />
+                        </div>
+                        <span className="text-[11px] text-gray-400 ml-1">4,218</span>
+                      </div>
+                      <span className="text-[11px] text-gray-400">312 comments</span>
+                      <span className="text-[11px] text-gray-400">89 reposts</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 border-t border-blue-100 px-5 py-2.5 flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 7.5l3 3 7-7" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="text-[12px] text-blue-600 font-medium">Top voice in B2B Sales — 40 inbound leads/month</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Email / Outbound card */}
-            <div className={`absolute inset-x-0 top-10 transition-all duration-500 ${
-              showOutbound
-                ? (phase === 'swap-to-results' ? 'opacity-0 translate-y-4 scale-95' : 'opacity-100 translate-x-0 scale-100')
-                : 'opacity-0 translate-x-8 scale-95 pointer-events-none'
-            }`}>
-              <div className="bg-white rounded-2xl shadow-2xl shadow-black/25 overflow-hidden max-w-md mx-auto">
-                {/* Window chrome */}
-                <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <div className="w-3 h-3 rounded-full bg-amber-400" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                  <span className="ml-3 text-[11px] text-gray-400 font-mono">compose email</span>
-                </div>
+              {/* Outbound card */}
+              <div className={`transition-all duration-500 ${
+                phase === 'outbound' && !transitioning ? 'opacity-100 scale-100' : ''
+              } ${transitioning ? 'opacity-0 scale-[0.97]' : ''} ${
+                phase !== 'outbound' && !transitioning ? 'hidden' : ''
+              }`}>
+                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden">
+                  <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                    <div className="w-3 h-3 rounded-full bg-red-400" />
+                    <div className="w-3 h-3 rounded-full bg-amber-400" />
+                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                    <span className="ml-3 text-[11px] text-gray-400 font-mono">compose email</span>
+                  </div>
 
-                <div className="p-6">
-                  <p className="text-[12px] text-gray-400 mb-1">To: Sarah Jennings</p>
-                  <p className="text-[14px] font-semibold text-gray-900 mb-5">
-                    Subject: Saw the Series B — congrats
-                  </p>
+                  <div className="p-6">
+                    <p className="text-[12px] text-gray-400 mb-1">To: Sarah Jennings</p>
+                    <p className="text-[14px] font-semibold text-gray-900 mb-5">
+                      Subject: Saw the Series B — congrats
+                    </p>
 
-                  <p className="text-[13.5px] text-gray-700 leading-relaxed whitespace-pre-line min-h-[160px]">
-                    {outboundTyped}
-                    <span className="inline-block w-0.5 h-4 bg-emerald-500 ml-0.5 animate-pulse align-text-bottom" />
-                  </p>
-                </div>
+                    <p className="text-[13.5px] text-gray-700 leading-relaxed">
+                      Hey Sarah,
+                      <br /><br />
+                      Congrats on the Series B — saw the announcement on LinkedIn. With the growth push, I imagine outbound is top of mind.
+                      <br /><br />
+                      We just helped a similar SaaS company book 40+ meetings in 6 weeks. Happy to share the playbook if useful.
+                      <br /><br />
+                      Cheers,<br />Nick
+                    </p>
+                  </div>
 
-                {/* Bottom success bar */}
-                <div className="bg-emerald-50 border-t border-emerald-100 px-5 py-2.5 flex items-center gap-2">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M2 7.5l3 3 7-7" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span className="text-[12px] text-emerald-600 font-medium">Delivered to primary inbox — 22% reply rate</span>
+                  <div className="bg-emerald-50 border-t border-emerald-100 px-5 py-2.5 flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 7.5l3 3 7-7" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="text-[12px] text-emerald-600 font-medium">Delivered to primary inbox — 22% reply rate</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Results card */}
-            <div className={`absolute inset-x-0 top-10 transition-all duration-700 ${
-              showResults ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
-            }`}>
-              <div className="bg-white rounded-2xl shadow-2xl shadow-black/25 overflow-hidden max-w-md mx-auto">
-                {/* Window chrome */}
-                <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <div className="w-3 h-3 rounded-full bg-amber-400" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                  <span className="ml-3 text-[11px] text-gray-400 font-mono">campaign dashboard</span>
-                </div>
-
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="text-sm font-semibold text-gray-900">Campaign Live</span>
-                    </div>
-                    <span className="text-[10px] text-gray-400 uppercase tracking-wider font-medium bg-gray-100 px-2.5 py-1 rounded-full">Founder-Led Growth</span>
+              {/* Results card */}
+              <div className={`transition-all duration-500 ${
+                phase === 'results' && !transitioning ? 'opacity-100 scale-100' : ''
+              } ${transitioning ? 'opacity-0 scale-[0.97]' : ''} ${
+                phase !== 'results' && !transitioning ? 'hidden' : ''
+              }`}>
+                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden">
+                  <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                    <div className="w-3 h-3 rounded-full bg-red-400" />
+                    <div className="w-3 h-3 rounded-full bg-amber-400" />
+                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                    <span className="ml-3 text-[11px] text-gray-400 font-mono">campaign dashboard</span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="bg-blue-50 rounded-xl p-4">
-                      <p className="text-[10px] text-blue-500 font-medium uppercase tracking-wider mb-1">Branding</p>
-                      <p className="font-serif text-2xl text-gray-900">4,218</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Avg. impressions/post</p>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-sm font-semibold text-gray-900">Campaign Live</span>
+                      </div>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider font-medium bg-gray-100 px-2.5 py-1 rounded-full">Founder-Led Growth</span>
                     </div>
-                    <div className="bg-emerald-50 rounded-xl p-4">
-                      <p className="text-[10px] text-emerald-500 font-medium uppercase tracking-wider mb-1">Outbound</p>
-                      <p className="font-serif text-2xl text-gray-900">4.2%</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Reply rate</p>
+
+                    <div className="grid grid-cols-2 gap-4 mb-5">
+                      <div className="bg-blue-50 rounded-xl p-4">
+                        <p className="text-[10px] text-blue-500 font-medium uppercase tracking-wider mb-1">Branding</p>
+                        <p className="font-serif text-2xl text-gray-900">4,218</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">Avg. impressions/post</p>
+                      </div>
+                      <div className="bg-emerald-50 rounded-xl p-4">
+                        <p className="text-[10px] text-emerald-500 font-medium uppercase tracking-wider mb-1">Outbound</p>
+                        <p className="font-serif text-2xl text-gray-900">4.2%</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">Reply rate</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="text-center p-3 bg-gray-50 rounded-lg">
+                        <p className="font-serif text-xl text-gray-900">22</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Calls booked</p>
+                      </div>
+                      <div className="text-center p-3 bg-gray-50 rounded-lg">
+                        <p className="font-serif text-xl text-gray-900">6</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Deals closed</p>
+                      </div>
+                      <div className="text-center p-3 bg-gray-50 rounded-lg">
+                        <p className="font-serif text-xl text-gray-900">$284k</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Pipeline</p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                      <p className="font-serif text-xl text-gray-900">22</p>
-                      <p className="text-[10px] text-gray-400 mt-0.5">Calls booked</p>
-                    </div>
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                      <p className="font-serif text-xl text-gray-900">6</p>
-                      <p className="text-[10px] text-gray-400 mt-0.5">Deals closed</p>
-                    </div>
-                    <div className="text-center p-3 bg-gray-50 rounded-lg">
-                      <p className="font-serif text-xl text-gray-900">$284k</p>
-                      <p className="text-[10px] text-gray-400 mt-0.5">Pipeline</p>
-                    </div>
+                  <div className="bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-2.5 flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 7.5l3 3 7-7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="text-[12px] text-white font-medium">Brand + Outbound = Compounding Growth</span>
                   </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-2.5 flex items-center gap-2">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M2 7.5l3 3 7-7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span className="text-[12px] text-white font-medium">Brand + Outbound = Compounding Growth</span>
                 </div>
               </div>
-            </div>
 
+              {/* Ambient card shadow */}
+              <div className="absolute -inset-4 -z-10 rounded-3xl bg-blue-500/[0.08] blur-2xl" />
+            </div>
           </div>
         </div>
       </div>
