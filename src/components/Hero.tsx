@@ -2,29 +2,30 @@ import { useState, useEffect, useCallback } from 'react';
 
 const PHASE_DURATION = 3500;
 const CARDS = ['branding', 'outbound', 'results'] as const;
-const GAP = 16;
-
-function getCardStyle(cardIndex: number, activeIndex: number) {
+function getCardStyle(cardIndex: number, activeIndex: number): React.CSSProperties {
   const total = CARDS.length;
   let offset = cardIndex - activeIndex;
   if (offset > 1) offset -= total;
   if (offset < -1) offset += total;
 
-  const base = {
-    transition: 'transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1)',
-    borderRadius: '16px',
+  const base: React.CSSProperties = {
+    transition: 'all 0.9s cubic-bezier(0.4, 0, 0.2, 1)',
+    position: 'absolute',
+    width: '78%',
+    height: '100%',
+    left: '11%',
   };
 
   if (offset === 0) {
     return { ...base, transform: 'translateX(0) scale(1)', opacity: 1, zIndex: 10 };
   }
   if (offset === 1) {
-    return { ...base, transform: `translateX(calc(100% + ${GAP}px)) scale(0.92)`, opacity: 0.5, zIndex: 5 };
+    return { ...base, transform: 'translateX(80%) scale(0.9)', opacity: 0.4, zIndex: 5 };
   }
   if (offset === -1) {
-    return { ...base, transform: `translateX(calc(-100% - ${GAP}px)) scale(0.92)`, opacity: 0.5, zIndex: 5 };
+    return { ...base, transform: 'translateX(-80%) scale(0.9)', opacity: 0.4, zIndex: 5 };
   }
-  return { ...base, transform: 'translateX(200%) scale(0.85)', opacity: 0, zIndex: 0 };
+  return { ...base, transform: 'translateX(160%) scale(0.85)', opacity: 0, zIndex: 0 };
 }
 
 export function Hero() {
@@ -113,13 +114,12 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Carousel track — clips left overflow, allows right peek */}
-            <div className="relative h-[420px] overflow-hidden">
-              <div className="absolute inset-0" style={{ overflow: 'visible' }}>
+            {/* Carousel track */}
+            <div className="relative h-[420px]">
 
                 {/* Branding card */}
                 <div
-                  className="absolute top-0 left-0 w-full h-full cursor-pointer"
+                  className="cursor-pointer top-0"
                   style={getCardStyle(0, active)}
                   onClick={() => setActive(0)}
                 >
@@ -169,7 +169,7 @@ export function Hero() {
 
                 {/* Outbound card */}
                 <div
-                  className="absolute top-0 left-0 w-full h-full cursor-pointer"
+                  className="cursor-pointer top-0"
                   style={getCardStyle(1, active)}
                   onClick={() => setActive(1)}
                 >
@@ -206,7 +206,7 @@ export function Hero() {
 
                 {/* Results card */}
                 <div
-                  className="absolute top-0 left-0 w-full h-full cursor-pointer"
+                  className="cursor-pointer top-0"
                   style={getCardStyle(2, active)}
                   onClick={() => setActive(2)}
                 >
@@ -261,7 +261,6 @@ export function Hero() {
                   </div>
                 </div>
 
-              </div>
             </div>
           </div>
         </div>
