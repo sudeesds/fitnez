@@ -12,35 +12,6 @@ export function Hero() {
         <div className="absolute bottom-1/3 right-0 w-[600px] h-[600px] rounded-full bg-blue-400/6 blur-[150px]" />
       </div>
 
-      {/* Decorative orbital rings */}
-      <div className="absolute top-1/2 right-[-8%] -translate-y-1/2 pointer-events-none hidden lg:block">
-        <svg width="520" height="520" viewBox="0 0 520 520" fill="none" className="opacity-[0.06]">
-          <circle cx="260" cy="260" r="258" stroke="white" strokeWidth="0.5" />
-          <circle cx="260" cy="260" r="200" stroke="white" strokeWidth="0.5" strokeDasharray="4 8" />
-          <circle cx="260" cy="260" r="140" stroke="white" strokeWidth="0.5" />
-          <circle cx="260" cy="60" r="4" fill="#3B82F6" opacity="0.6">
-            <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="360 260 260" dur="30s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="460" cy="260" r="3" fill="#60A5FA" opacity="0.4">
-            <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="-360 260 260" dur="45s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="260" cy="120" r="2.5" fill="#93C5FD" opacity="0.5">
-            <animateTransform attributeName="transform" type="rotate" from="0 260 260" to="360 260 260" dur="20s" repeatCount="indefinite" />
-          </circle>
-        </svg>
-      </div>
-
-      {/* Floating connection lines */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.04] hidden md:block" preserveAspectRatio="none">
-        <line x1="10%" y1="20%" x2="35%" y2="55%" stroke="white" strokeWidth="0.5" />
-        <line x1="35%" y1="55%" x2="65%" y2="40%" stroke="white" strokeWidth="0.5" />
-        <line x1="65%" y1="40%" x2="90%" y2="70%" stroke="white" strokeWidth="0.5" />
-        <circle cx="10%" cy="20%" r="2" fill="white" opacity="0.3" />
-        <circle cx="35%" cy="55%" r="2" fill="white" opacity="0.3" />
-        <circle cx="65%" cy="40%" r="2" fill="white" opacity="0.3" />
-        <circle cx="90%" cy="70%" r="2" fill="white" opacity="0.3" />
-      </svg>
-
       <div className="container-wide relative z-10 px-6 md:px-12 lg:px-20 pt-32 pb-20 md:pt-40 md:pb-24">
         {/* Top section — headline + sub */}
         <div className="max-w-3xl mb-16 md:mb-24">
@@ -145,27 +116,6 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Stats row */}
-        <div className={`mt-16 transition-all duration-700 delay-[750ms] ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-          <div className="flex flex-wrap gap-x-12 gap-y-6 border-t border-white/[0.06] pt-8">
-            <div>
-              <p className="font-serif text-heading-2 text-white">30+</p>
-              <p className="text-body-sm text-blue-200/30 mt-1">Founders served</p>
-            </div>
-            <div>
-              <p className="font-serif text-heading-2 text-white">6</p>
-              <p className="text-body-sm text-blue-200/30 mt-1">Countries</p>
-            </div>
-            <div>
-              <p className="font-serif text-heading-2 text-white">2M+</p>
-              <p className="text-body-sm text-blue-200/30 mt-1">Prospects reached</p>
-            </div>
-            <div>
-              <p className="font-serif text-heading-2 text-white">3x</p>
-              <p className="text-body-sm text-blue-200/30 mt-1">Avg. reply rate lift</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Bottom fade to cream */}
