@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 const PHASE_DURATION = 3500;
 const CARDS = ['branding', 'outbound', 'results'] as const;
+const GAP = 16;
 
 function getCardStyle(cardIndex: number, activeIndex: number) {
   const total = CARDS.length;
@@ -9,36 +10,21 @@ function getCardStyle(cardIndex: number, activeIndex: number) {
   if (offset > 1) offset -= total;
   if (offset < -1) offset += total;
 
+  const base = {
+    transition: 'transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1)',
+    borderRadius: '16px',
+  };
+
   if (offset === 0) {
-    return {
-      transform: 'translateX(0%) scale(1)',
-      opacity: 1,
-      zIndex: 10,
-      filter: 'none',
-    };
+    return { ...base, transform: 'translateX(0) scale(1)', opacity: 1, zIndex: 10 };
   }
   if (offset === 1) {
-    return {
-      transform: 'translateX(75%) scale(0.85)',
-      opacity: 0.35,
-      zIndex: 5,
-      filter: 'brightness(0.6)',
-    };
+    return { ...base, transform: `translateX(calc(100% + ${GAP}px)) scale(0.92)`, opacity: 0.5, zIndex: 5 };
   }
   if (offset === -1) {
-    return {
-      transform: 'translateX(-75%) scale(0.85)',
-      opacity: 0.35,
-      zIndex: 5,
-      filter: 'brightness(0.6)',
-    };
+    return { ...base, transform: `translateX(calc(-100% - ${GAP}px)) scale(0.92)`, opacity: 0.5, zIndex: 5 };
   }
-  return {
-    transform: 'translateX(0%) scale(0.8)',
-    opacity: 0,
-    zIndex: 0,
-    filter: 'brightness(0.5)',
-  };
+  return { ...base, transform: 'translateX(200%) scale(0.85)', opacity: 0, zIndex: 0 };
 }
 
 export function Hero() {
@@ -88,7 +74,7 @@ export function Hero() {
               ever reach out.
             </p>
 
-            <div className={`flex flex-wrap gap-4 mb-14 transition-all duration-700 delay-[450ms] ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+            <div className={`flex flex-wrap gap-4 transition-all duration-700 delay-[450ms] ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
               <a
                 href="#cta"
                 className="inline-flex items-center gap-2 bg-white text-blue-950 font-medium px-7 py-3.5 rounded-full hover:bg-blue-50 transition-all hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)]"
@@ -105,25 +91,10 @@ export function Hero() {
                 See a free sample
               </a>
             </div>
-
-            <div className={`flex gap-10 transition-all duration-700 delay-[600ms] ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-              <div>
-                <p className="font-serif text-heading-3 text-white">30+</p>
-                <p className="text-xs text-blue-200/35 mt-0.5">Founders</p>
-              </div>
-              <div>
-                <p className="font-serif text-heading-3 text-white">6</p>
-                <p className="text-xs text-blue-200/35 mt-0.5">Countries</p>
-              </div>
-              <div>
-                <p className="font-serif text-heading-3 text-white">2M+</p>
-                <p className="text-xs text-blue-200/35 mt-0.5">Prospects</p>
-              </div>
-            </div>
           </div>
 
           {/* Right — Carousel */}
-          <div className={`transition-all duration-1000 delay-500 overflow-hidden py-4 -my-4 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+          <div className={`transition-all duration-1000 delay-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
 
             {/* Badge with highlighted words */}
             <div className="flex justify-center mb-6">
@@ -142,168 +113,155 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Carousel container */}
-            <div className="relative w-full max-w-md mx-auto h-[420px]">
+            {/* Carousel track — clips left overflow, allows right peek */}
+            <div className="relative h-[420px] overflow-hidden">
+              <div className="absolute inset-0" style={{ overflow: 'visible' }}>
 
-              {/* Branding card */}
-              <div
-                className="absolute inset-0 transition-all duration-700 ease-in-out cursor-pointer"
-                style={getCardStyle(0, active)}
-                onClick={() => setActive(0)}
-              >
-                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
-                  <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
-                    <div className="w-3 h-3 rounded-full bg-red-400" />
-                    <div className="w-3 h-3 rounded-full bg-amber-400" />
-                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                    <span className="ml-3 text-[11px] text-gray-400 font-mono">linkedin post</span>
-                  </div>
-                  <div className="p-6 flex-1">
-                    <div className="flex items-center gap-3 mb-5">
-                      <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shrink-0">
-                        <span className="text-white font-semibold text-sm">S</span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">Sarah Mitchell</p>
-                        <p className="text-[11px] text-gray-400">CEO at Nexvoy · 2h · 🌍</p>
-                      </div>
+                {/* Branding card */}
+                <div
+                  className="absolute top-0 left-0 w-full h-full cursor-pointer"
+                  style={getCardStyle(0, active)}
+                  onClick={() => setActive(0)}
+                >
+                  <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
+                    <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                      <div className="w-3 h-3 rounded-full bg-red-400" />
+                      <div className="w-3 h-3 rounded-full bg-amber-400" />
+                      <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                      <span className="ml-3 text-[11px] text-gray-400 font-mono">linkedin post</span>
                     </div>
-                    <p className="text-[13px] text-gray-700 leading-relaxed">
-                      The era of faceless brands is over. Your prospects want to hear from you — the founder, the expert, the human behind the company.
-                      <br /><br />
-                      That's the unfair advantage waiting to be unlocked. We help you build it.
-                    </p>
-                    <div className="flex items-center gap-5 pt-4 mt-5 border-t border-gray-100">
-                      <div className="flex items-center gap-1.5">
-                        <div className="flex -space-x-1">
-                          <div className="w-[18px] h-[18px] rounded-full bg-blue-500" />
-                          <div className="w-[18px] h-[18px] rounded-full bg-red-500" />
-                          <div className="w-[18px] h-[18px] rounded-full bg-yellow-500" />
+                    <div className="p-6 flex-1">
+                      <div className="flex items-center gap-3 mb-5">
+                        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shrink-0">
+                          <span className="text-white font-semibold text-sm">S</span>
                         </div>
-                        <span className="text-[11px] text-gray-400 ml-1">4,218</span>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900">Sarah Mitchell</p>
+                          <p className="text-[11px] text-gray-400">CEO at Nexvoy · 2h · 🌍</p>
+                        </div>
                       </div>
-                      <span className="text-[11px] text-gray-400">312 comments</span>
-                      <span className="text-[11px] text-gray-400">89 reposts</span>
+                      <p className="text-[13px] text-gray-700 leading-relaxed">
+                        The era of faceless brands is over. Your prospects want to hear from you — the founder, the expert, the human behind the company.
+                        <br /><br />
+                        That's the unfair advantage waiting to be unlocked. We help you build it.
+                      </p>
+                      <div className="flex items-center gap-5 pt-4 mt-5 border-t border-gray-100">
+                        <div className="flex items-center gap-1.5">
+                          <div className="flex -space-x-1">
+                            <div className="w-[18px] h-[18px] rounded-full bg-blue-500" />
+                            <div className="w-[18px] h-[18px] rounded-full bg-red-500" />
+                            <div className="w-[18px] h-[18px] rounded-full bg-yellow-500" />
+                          </div>
+                          <span className="text-[11px] text-gray-400 ml-1">4,218</span>
+                        </div>
+                        <span className="text-[11px] text-gray-400">312 comments</span>
+                        <span className="text-[11px] text-gray-400">89 reposts</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="bg-blue-50 border-t border-blue-100 px-5 py-2.5 flex items-center gap-2">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path d="M2 7.5l3 3 7-7" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span className="text-[12px] text-blue-600 font-medium">Top voice — 40 inbound leads/month</span>
+                    <div className="bg-blue-50 border-t border-blue-100 px-5 py-2.5 flex items-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M2 7.5l3 3 7-7" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span className="text-[12px] text-blue-600 font-medium">Top voice — 40 inbound leads/month</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Outbound card */}
-              <div
-                className="absolute inset-0 transition-all duration-700 ease-in-out cursor-pointer"
-                style={getCardStyle(1, active)}
-                onClick={() => setActive(1)}
-              >
-                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
-                  <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
-                    <div className="w-3 h-3 rounded-full bg-red-400" />
-                    <div className="w-3 h-3 rounded-full bg-amber-400" />
-                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                    <span className="ml-3 text-[11px] text-gray-400 font-mono">compose email</span>
-                  </div>
-                  <div className="p-6 flex-1">
-                    <p className="text-[12px] text-gray-400 mb-1">To: Sarah Jennings</p>
-                    <p className="text-[14px] font-semibold text-gray-900 mb-5">
-                      Subject: Saw the Series B — congrats
-                    </p>
-                    <p className="text-[13px] text-gray-700 leading-relaxed">
-                      Hey Sarah,
-                      <br /><br />
-                      Congrats on the Series B — saw the announcement on LinkedIn. With the growth push, I imagine outbound is top of mind.
-                      <br /><br />
-                      We just helped a similar SaaS company book 40+ meetings in 6 weeks. Happy to share the playbook if useful.
-                      <br /><br />
-                      Cheers,<br />Nick
-                    </p>
-                  </div>
-                  <div className="bg-emerald-50 border-t border-emerald-100 px-5 py-2.5 flex items-center gap-2">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path d="M2 7.5l3 3 7-7" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span className="text-[12px] text-emerald-600 font-medium">Primary inbox — 22% reply rate</span>
+                {/* Outbound card */}
+                <div
+                  className="absolute top-0 left-0 w-full h-full cursor-pointer"
+                  style={getCardStyle(1, active)}
+                  onClick={() => setActive(1)}
+                >
+                  <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
+                    <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                      <div className="w-3 h-3 rounded-full bg-red-400" />
+                      <div className="w-3 h-3 rounded-full bg-amber-400" />
+                      <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                      <span className="ml-3 text-[11px] text-gray-400 font-mono">compose email</span>
+                    </div>
+                    <div className="p-6 flex-1">
+                      <p className="text-[12px] text-gray-400 mb-1">To: Sarah Jennings</p>
+                      <p className="text-[14px] font-semibold text-gray-900 mb-5">
+                        Subject: Saw the Series B — congrats
+                      </p>
+                      <p className="text-[13px] text-gray-700 leading-relaxed">
+                        Hey Sarah,
+                        <br /><br />
+                        Congrats on the Series B — saw the announcement on LinkedIn. With the growth push, I imagine outbound is top of mind.
+                        <br /><br />
+                        We just helped a similar SaaS company book 40+ meetings in 6 weeks. Happy to share the playbook if useful.
+                        <br /><br />
+                        Cheers,<br />Nick
+                      </p>
+                    </div>
+                    <div className="bg-emerald-50 border-t border-emerald-100 px-5 py-2.5 flex items-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M2 7.5l3 3 7-7" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span className="text-[12px] text-emerald-600 font-medium">Primary inbox — 22% reply rate</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Results card */}
-              <div
-                className="absolute inset-0 transition-all duration-700 ease-in-out cursor-pointer"
-                style={getCardStyle(2, active)}
-                onClick={() => setActive(2)}
-              >
-                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
-                  <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
-                    <div className="w-3 h-3 rounded-full bg-red-400" />
-                    <div className="w-3 h-3 rounded-full bg-amber-400" />
-                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                    <span className="ml-3 text-[11px] text-gray-400 font-mono">campaign dashboard</span>
-                  </div>
-                  <div className="p-6 flex-1">
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-sm font-semibold text-gray-900">Campaign Live</span>
-                      </div>
-                      <span className="text-[10px] text-gray-400 uppercase tracking-wider font-medium bg-gray-100 px-2.5 py-1 rounded-full">Founder-Led</span>
+                {/* Results card */}
+                <div
+                  className="absolute top-0 left-0 w-full h-full cursor-pointer"
+                  style={getCardStyle(2, active)}
+                  onClick={() => setActive(2)}
+                >
+                  <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden h-full flex flex-col">
+                    <div className="flex items-center gap-2 px-5 py-3 bg-gray-50 border-b border-gray-100">
+                      <div className="w-3 h-3 rounded-full bg-red-400" />
+                      <div className="w-3 h-3 rounded-full bg-amber-400" />
+                      <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                      <span className="ml-3 text-[11px] text-gray-400 font-mono">campaign dashboard</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-4 mb-5">
-                      <div className="bg-blue-50 rounded-xl p-4">
-                        <p className="text-[10px] text-blue-500 font-medium uppercase tracking-wider mb-1">Branding</p>
-                        <p className="font-serif text-2xl text-gray-900">4,218</p>
-                        <p className="text-[11px] text-gray-400 mt-0.5">Impressions/post</p>
+                    <div className="p-6 flex-1">
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                          <span className="text-sm font-semibold text-gray-900">Campaign Live</span>
+                        </div>
+                        <span className="text-[10px] text-gray-400 uppercase tracking-wider font-medium bg-gray-100 px-2.5 py-1 rounded-full">Founder-Led</span>
                       </div>
-                      <div className="bg-emerald-50 rounded-xl p-4">
-                        <p className="text-[10px] text-emerald-500 font-medium uppercase tracking-wider mb-1">Outbound</p>
-                        <p className="font-serif text-2xl text-gray-900">4.2%</p>
-                        <p className="text-[11px] text-gray-400 mt-0.5">Reply rate</p>
+                      <div className="grid grid-cols-2 gap-4 mb-5">
+                        <div className="bg-blue-50 rounded-xl p-4">
+                          <p className="text-[10px] text-blue-500 font-medium uppercase tracking-wider mb-1">Branding</p>
+                          <p className="font-serif text-2xl text-gray-900">4,218</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">Impressions/post</p>
+                        </div>
+                        <div className="bg-emerald-50 rounded-xl p-4">
+                          <p className="text-[10px] text-emerald-500 font-medium uppercase tracking-wider mb-1">Outbound</p>
+                          <p className="font-serif text-2xl text-gray-900">4.2%</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">Reply rate</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="text-center p-3 bg-gray-50 rounded-lg">
+                          <p className="font-serif text-xl text-gray-900">22</p>
+                          <p className="text-[10px] text-gray-400 mt-0.5">Calls</p>
+                        </div>
+                        <div className="text-center p-3 bg-gray-50 rounded-lg">
+                          <p className="font-serif text-xl text-gray-900">6</p>
+                          <p className="text-[10px] text-gray-400 mt-0.5">Deals</p>
+                        </div>
+                        <div className="text-center p-3 bg-gray-50 rounded-lg">
+                          <p className="font-serif text-xl text-gray-900">$284k</p>
+                          <p className="text-[10px] text-gray-400 mt-0.5">Pipeline</p>
+                        </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <p className="font-serif text-xl text-gray-900">22</p>
-                        <p className="text-[10px] text-gray-400 mt-0.5">Calls</p>
-                      </div>
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <p className="font-serif text-xl text-gray-900">6</p>
-                        <p className="text-[10px] text-gray-400 mt-0.5">Deals</p>
-                      </div>
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <p className="font-serif text-xl text-gray-900">$284k</p>
-                        <p className="text-[10px] text-gray-400 mt-0.5">Pipeline</p>
-                      </div>
+                    <div className="bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-2.5 flex items-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M2 7.5l3 3 7-7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span className="text-[12px] text-white font-medium">Brand + Outbound = Compounding Growth</span>
                     </div>
-                  </div>
-                  <div className="bg-gradient-to-r from-blue-500 to-emerald-500 px-5 py-2.5 flex items-center gap-2">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path d="M2 7.5l3 3 7-7" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span className="text-[12px] text-white font-medium">Brand + Outbound = Compounding Growth</span>
                   </div>
                 </div>
+
               </div>
-
-              {/* Ambient glow */}
-              <div className="absolute -inset-6 -z-10 rounded-3xl bg-blue-500/[0.06] blur-2xl" />
-            </div>
-
-            {/* Phase dots */}
-            <div className="flex justify-center gap-2 mt-6">
-              {CARDS.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${
-                    i === active ? 'w-8 bg-blue-400' : 'w-1.5 bg-white/20 hover:bg-white/30'
-                  }`}
-                />
-              ))}
             </div>
           </div>
         </div>
