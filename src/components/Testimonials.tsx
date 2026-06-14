@@ -67,19 +67,151 @@ const testimonials: Testimonial[] = [
   },
 ];
 
-const clientLocations: Record<string, { cx: number; cy: number }> = {
-  US: { cx: 150, cy: 145 },
-  DE: { cx: 495, cy: 115 },
-  UK: { cx: 470, cy: 105 },
-  AE: { cx: 570, cy: 170 },
-  IN: { cx: 610, cy: 170 },
-  AU: { cx: 720, cy: 270 },
+// Client dot positions on the 72x36 grid
+const clientDots: Record<string, { col: number; row: number }> = {
+  US: { col: 15, row: 12 },
+  UK: { col: 35, row: 9 },
+  DE: { col: 37, row: 9 },
+  AE: { col: 43, row: 15 },
+  IN: { col: 49, row: 15 },
+  AU: { col: 57, row: 27 },
 };
+
+// 72 columns x 36 rows dot-matrix world map
+// Each string is a row, '1' = land, '0' = water
+const worldMap: string[] = [
+  '000000000000000000000000000000000000000000000000000000000000000000000000', // 0
+  '000000000000000000000000000000000000000000000000000000000000000000000000', // 1
+  '000000000000000000000000000100000000001111111111111111111100000000000000', // 2
+  '000000000000001100000001111110000000011111111111111111111111000000000000', // 3
+  '000000000000011110000011111111000001111111111111111111111111110000000000', // 4
+  '000000000011111111100111111111100011111111111111111111111111111100000000', // 5
+  '000000001111111111101111111111100011111111111111111111111111111110000000', // 6
+  '000000011111111111111111111111100001111101111111111111111111111111000000', // 7
+  '000000111111111111111111111111000000011100111111111111111111111111100000', // 8
+  '000001111111111111111111100000000000111100011111011111111111111111100000', // 9
+  '000011111111111111111110000000000001111110011111001111111111111111000000', // 10
+  '000111111111111111111100000000000001111110001111000111111111111100000000', // 11
+  '001111111111111111111000000000000000111111000110001111111111111000000000', // 12
+  '001111111111111110000000000000000001111110000000011111111111110000000000', // 13
+  '000111111111111100000000000000000001111111100000111111101111100000000000', // 14
+  '000011111111110000000000000000000001111111110001111111100111100000000000', // 15
+  '000001111111100000000000000000000001111111110001111110000011000000000000', // 16
+  '000000111111000000000000000000000000111111111000111100000000000000000000', // 17
+  '000000011110000000000000000000000000111111111000011000000001100000000000', // 18
+  '000000011110000000000000000000000000011111111000000000000011110000000000', // 19
+  '000000111111000000000000000000000000011111110000000000000111111000000000', // 20
+  '000001111111100000000000000000000000001111100000000000001111111000000000', // 21
+  '000001111111100000000000000000000000001111000000000000001111111100000000', // 22
+  '000000111111110000000000000000000000000110000000000000000111111100000000', // 23
+  '000000011111110000000000000000000000000100000000000000000011111000000000', // 24
+  '000000001111100000000000000000000000000000000000000000000001110000000000', // 25
+  '000000000111000000000000000000000000000000000000000000000000100000000000', // 26
+  '000000000010000000000000000000000000000000000000000000011111110000000000', // 27
+  '000000000000000000000000000000000000000000000000000000111111111000000000', // 28
+  '000000000000000000000000000000000000000000000000000000111111111100000000', // 29
+  '000000000000000000000000000000000000000000000000000000011111111100000000', // 30
+  '000000000000000000000000000000000000000000000000000000001111111000000000', // 31
+  '000000000000000000000000000000000000000000000000000000000111110000000000', // 32
+  '000000000000000000000000000000000000000000000000000000000011100000000000', // 33
+  '000000000000000000000000000000000000000000000000000000000000000001100000', // 34
+  '000000000000000000000000000000000000000000000000000000000000000001100000', // 35
+];
+
+const COLS = 72;
+const ROWS = 36;
+const DOT_SPACING = 10;
+const DOT_R = 1.8;
+
+function DotMap({ active, onSelect }: { active: number; onSelect: (i: number) => void }) {
+  const width = COLS * DOT_SPACING;
+  const height = ROWS * DOT_SPACING;
+
+  const activeCode = testimonials[active].countryCode;
+  const activeDot = clientDots[activeCode];
+
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} className="w-full" aria-label="World map showing client locations">
+      <defs>
+        <linearGradient id="dotGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#1D4ED8" />
+          <stop offset="100%" stopColor="#3B82F6" />
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* Land dots */}
+      {worldMap.map((row, r) =>
+        row.split('').map((cell, c) => {
+          if (cell !== '1') return null;
+          return (
+            <circle
+              key={`${r}-${c}`}
+              cx={c * DOT_SPACING + DOT_SPACING / 2}
+              cy={r * DOT_SPACING + DOT_SPACING / 2}
+              r={DOT_R}
+              fill="#C9BAA5"
+              opacity={0.5}
+            />
+          );
+        })
+      )}
+
+      {/* Client location markers */}
+      {testimonials.map((t, i) => {
+        const d = clientDots[t.countryCode];
+        const cx = d.col * DOT_SPACING + DOT_SPACING / 2;
+        const cy = d.row * DOT_SPACING + DOT_SPACING / 2;
+        const isActive = active === i;
+
+        return (
+          <g key={t.countryCode} onClick={() => onSelect(i)} className="cursor-pointer">
+            {isActive && (
+              <>
+                <circle cx={cx} cy={cy} r="16" fill="none" stroke="#3B82F6" strokeWidth="1" opacity="0.15">
+                  <animate attributeName="r" from="8" to="22" dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" from="0.3" to="0" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx={cx} cy={cy} r="10" fill="#3B82F6" opacity="0.06" />
+              </>
+            )}
+            <circle
+              cx={cx}
+              cy={cy}
+              r={isActive ? 5 : 3}
+              fill={isActive ? 'url(#dotGrad)' : '#7A726B'}
+              filter={isActive ? 'url(#glow)' : undefined}
+              className="transition-all duration-300"
+            />
+          </g>
+        );
+      })}
+
+      {/* Connecting line */}
+      <line
+        x1={activeDot.col * DOT_SPACING + DOT_SPACING / 2 + 8}
+        y1={activeDot.row * DOT_SPACING + DOT_SPACING / 2}
+        x2={width}
+        y2={activeDot.row * DOT_SPACING + DOT_SPACING / 2}
+        stroke="#3B82F6"
+        strokeWidth="0.5"
+        strokeDasharray="3,6"
+        opacity="0.25"
+        className="transition-all duration-500"
+      />
+    </svg>
+  );
+}
 
 export function Testimonials() {
   const [active, setActive] = useState(0);
   const current = testimonials[active];
-  const loc = clientLocations[current.countryCode];
 
   return (
     <section id="testimonials" className="section-padding">
@@ -94,112 +226,9 @@ export function Testimonials() {
         </div>
 
         <div className="grid md:grid-cols-5 gap-12 items-start">
-          {/* World Map — 3 columns */}
           <div className="md:col-span-3 relative">
-            <svg viewBox="0 0 900 420" className="w-full" aria-label="World map showing client locations">
-              <defs>
-                <linearGradient id="landGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#C9BAA5" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#E0D5C4" stopOpacity="0.55" />
-                </linearGradient>
-                <linearGradient id="dotGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#1D4ED8" />
-                  <stop offset="100%" stopColor="#3B82F6" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
+            <DotMap active={active} onSelect={setActive} />
 
-              {/* North America */}
-              <path d="M60,55 L90,45 L130,40 L165,50 L190,60 L210,55 L230,65 L225,80 L215,95 L220,110 L210,125 L195,140 L180,155 L165,160 L150,170 L130,175 L115,165 L100,155 L90,160 L75,155 L65,140 L55,120 L50,100 L55,80 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Greenland */}
-              <path d="M280,30 L310,25 L340,30 L350,45 L340,55 L315,60 L290,55 L280,40 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Central America */}
-              <path d="M130,175 L145,180 L155,190 L150,200 L140,195 L130,185 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* South America */}
-              <path d="M170,210 L200,200 L220,205 L235,220 L240,245 L235,270 L225,290 L215,310 L200,325 L185,335 L175,330 L170,310 L160,290 L155,265 L158,240 L165,220 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Europe */}
-              <path d="M430,55 L445,50 L465,48 L485,52 L505,55 L520,60 L530,70 L525,85 L515,95 L510,105 L500,115 L490,120 L475,125 L460,120 L450,115 L440,108 L435,95 L430,80 L425,65 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* British Isles */}
-              <path d="M440,70 L450,65 L455,72 L448,80 L440,78 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Scandinavia */}
-              <path d="M480,30 L495,25 L510,30 L515,45 L510,55 L500,50 L490,45 L485,38 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Africa */}
-              <path d="M450,135 L470,130 L495,130 L520,135 L540,145 L555,160 L560,180 L555,205 L545,230 L530,255 L515,270 L500,280 L485,275 L470,265 L458,250 L450,230 L445,205 L440,180 L442,155 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Middle East */}
-              <path d="M535,120 L555,115 L575,120 L585,135 L590,150 L585,165 L575,175 L560,170 L545,160 L535,145 L530,130 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* India / South Asia */}
-              <path d="M590,125 L615,115 L640,120 L650,135 L645,155 L635,175 L620,190 L605,195 L595,185 L585,170 L580,150 L585,135 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Southeast Asia */}
-              <path d="M655,140 L675,130 L695,135 L705,150 L700,165 L690,175 L675,175 L660,170 L650,160 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* East Asia / China */}
-              <path d="M640,70 L670,60 L700,55 L730,60 L750,70 L755,85 L745,100 L730,115 L710,125 L690,130 L670,125 L655,115 L645,100 L640,85 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Japan */}
-              <path d="M760,80 L770,75 L775,85 L772,100 L765,105 L758,95 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Indonesia */}
-              <path d="M670,200 L690,195 L715,198 L735,205 L720,215 L700,218 L680,215 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Australia */}
-              <path d="M690,250 L720,240 L750,238 L775,245 L790,260 L785,280 L770,295 L750,305 L725,308 L705,300 L695,285 L688,270 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* New Zealand */}
-              <path d="M810,300 L818,295 L822,305 L815,315 L808,310 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-              {/* Russia / Northern Asia */}
-              <path d="M530,30 L570,22 L620,20 L670,22 L720,28 L755,35 L770,45 L760,55 L740,55 L700,50 L660,55 L640,65 L620,60 L590,55 L560,50 L540,45 Z" fill="url(#landGrad)" stroke="#C9BAA5" strokeWidth="0.8" />
-
-              {/* Grid lines for depth */}
-              {[80, 140, 200, 260, 320].map(y => (
-                <line key={`h${y}`} x1="30" y1={y} x2="870" y2={y} stroke="#E0D5C4" strokeWidth="0.3" strokeDasharray="4,8" opacity="0.4" />
-              ))}
-              {[150, 300, 450, 600, 750].map(x => (
-                <line key={`v${x}`} x1={x} y1="10" x2={x} y2="380" stroke="#E0D5C4" strokeWidth="0.3" strokeDasharray="4,8" opacity="0.4" />
-              ))}
-
-              {/* Client location dots */}
-              {testimonials.map((t, i) => {
-                const l = clientLocations[t.countryCode];
-                const isActive = active === i;
-                return (
-                  <g key={t.countryCode} onClick={() => setActive(i)} className="cursor-pointer">
-                    {isActive && (
-                      <>
-                        <circle cx={l.cx} cy={l.cy} r="20" fill="none" stroke="#3B82F6" strokeWidth="1" opacity="0.15">
-                          <animate attributeName="r" from="10" to="28" dur="2s" repeatCount="indefinite" />
-                          <animate attributeName="opacity" from="0.3" to="0" dur="2s" repeatCount="indefinite" />
-                        </circle>
-                        <circle cx={l.cx} cy={l.cy} r="12" fill="#3B82F6" opacity="0.08" />
-                      </>
-                    )}
-                    <circle
-                      cx={l.cx}
-                      cy={l.cy}
-                      r={isActive ? 6 : 4}
-                      fill={isActive ? 'url(#dotGrad)' : '#9B9289'}
-                      filter={isActive ? 'url(#glow)' : undefined}
-                      className="transition-all duration-300"
-                    />
-                  </g>
-                );
-              })}
-
-              {/* Connecting line from active dot */}
-              <line
-                x1={loc.cx}
-                y1={loc.cy}
-                x2="870"
-                y2={loc.cy}
-                stroke="#3B82F6"
-                strokeWidth="0.5"
-                strokeDasharray="3,6"
-                opacity="0.3"
-                className="transition-all duration-500"
-              />
-            </svg>
-
-            {/* Country pills */}
             <div className="flex flex-wrap gap-2 mt-6">
               {testimonials.map((t, i) => (
                 <button
@@ -217,7 +246,6 @@ export function Testimonials() {
             </div>
           </div>
 
-          {/* Testimonial — 2 columns */}
           <div className="md:col-span-2 md:pt-8" key={active}>
             <div className="fade-in-up">
               <blockquote className="font-serif text-heading-3 text-warm-900 leading-relaxed mb-8">
