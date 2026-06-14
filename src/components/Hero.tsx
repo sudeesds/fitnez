@@ -11,21 +11,21 @@ function getCardStyle(cardIndex: number, activeIndex: number): React.CSSProperti
   const base: React.CSSProperties = {
     transition: 'all 0.9s cubic-bezier(0.4, 0, 0.2, 1)',
     position: 'absolute',
-    width: '78%',
+    width: '100%',
     height: '100%',
-    left: '11%',
+    left: 0,
   };
 
   if (offset === 0) {
     return { ...base, transform: 'translateX(0) scale(1)', opacity: 1, zIndex: 10 };
   }
   if (offset === 1) {
-    return { ...base, transform: 'translateX(80%) scale(0.9)', opacity: 0.4, zIndex: 5 };
+    return { ...base, transform: 'translateX(93%) scale(0.95)', opacity: 0.5, zIndex: 5 };
   }
   if (offset === -1) {
-    return { ...base, transform: 'translateX(-80%) scale(0.9)', opacity: 0.4, zIndex: 5 };
+    return { ...base, transform: 'translateX(-93%) scale(0.95)', opacity: 0.5, zIndex: 5 };
   }
-  return { ...base, transform: 'translateX(160%) scale(0.85)', opacity: 0, zIndex: 0 };
+  return { ...base, transform: 'translateX(186%) scale(0.9)', opacity: 0, zIndex: 0 };
 }
 
 export function Hero() {
@@ -115,7 +115,7 @@ export function Hero() {
             </div>
 
             {/* Carousel track */}
-            <div className="relative h-[420px]">
+            <div className="relative h-[420px] overflow-hidden rounded-2xl">
 
                 {/* Branding card */}
                 <div
