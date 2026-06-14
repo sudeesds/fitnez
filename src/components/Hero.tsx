@@ -69,57 +69,106 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right — Visual mockups */}
-          <div className={`relative transition-all duration-1000 delay-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+          {/* Right — Animated visual story */}
+          <div className="relative flex flex-col items-end gap-0">
 
-            {/* LinkedIn post mockup */}
-            <div className="bg-white rounded-xl shadow-2xl shadow-black/20 p-5 max-w-sm ml-auto relative z-10">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
-                  <span className="text-white font-medium text-sm">S</span>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Sarah Mitchell</p>
-                  <p className="text-[11px] text-gray-400">CEO at Nexvoy · 1d</p>
-                </div>
-              </div>
-              <p className="text-[13px] text-gray-700 leading-relaxed mb-4">
-                3 months ago, I had zero inbound leads from LinkedIn.<br /><br />
-                Today, we're getting 40+ per month.<br /><br />
-                Here's the exact framework we used to turn my personal brand into our #1 pipeline source 👇
-              </p>
-              <div className="flex items-center gap-5 pt-3 border-t border-gray-100">
-                <div className="flex items-center gap-1.5">
-                  <div className="flex -space-x-1">
-                    <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-                      <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M4 1.5a1 1 0 011 1v.5a1 1 0 01-2 0V2.5a1 1 0 011-1z" fill="white"/><path d="M2 5.5c0-1.1.9-2 2-2s2 .9 2 2" stroke="white" strokeWidth=".7"/></svg>
-                    </div>
-                    <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
-                      <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M4 2.5C4 1.9 4.5 1.5 5 2c.5.5.1 1-.5 1.5L4 4l-.5-.5C2.9 2.9 2.5 2.5 3 2c.5-.5 1-.1 1 .5z" fill="white"/></svg>
-                    </div>
-                  </div>
-                  <span className="text-[11px] text-gray-400">2,847</span>
-                </div>
-                <span className="text-[11px] text-gray-400">184 comments</span>
-                <span className="text-[11px] text-gray-400">52 reposts</span>
-              </div>
-            </div>
-
-            {/* Connecting visual — arrow/flow */}
-            <div className="hidden lg:flex items-center justify-center my-3 ml-auto max-w-sm">
-              <svg width="24" height="40" viewBox="0 0 24 40" fill="none" className="mx-auto">
-                <path d="M12 0v32m0 0l-6-6m6 6l6-6" stroke="#3B82F6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.4"/>
+            {/* Top badge — Brand + Outbound */}
+            <div className="hero-anim-badge mb-4 self-center bg-blue-500/10 backdrop-blur border border-blue-400/20 rounded-full px-5 py-2 flex items-center gap-2">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1v12M1 7h12" stroke="#60A5FA" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
+              <p className="text-xs text-blue-300/80 font-medium">Brand + Outbound = Compounding Growth</p>
             </div>
 
-            {/* Lead gen results card */}
-            <div className="bg-white/[0.06] backdrop-blur-md border border-white/[0.1] rounded-xl p-5 max-w-sm ml-auto">
+            {/* Two cards side by side that animate in */}
+            <div className="grid grid-cols-2 gap-3 w-full max-w-md ml-auto mb-3">
+
+              {/* LinkedIn post mockup — slides in from left */}
+              <div className="hero-anim-branding bg-white rounded-xl shadow-xl shadow-black/15 p-4 relative">
+                <div className="absolute -top-2 left-3 bg-blue-600 text-white text-[9px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Branding
+                </div>
+                <div className="flex items-center gap-2 mb-3 mt-1">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                    <span className="text-white font-medium text-[10px]">S</span>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold text-gray-900">Sarah Mitchell</p>
+                    <p className="text-[9px] text-gray-400">CEO at Nexvoy</p>
+                  </div>
+                </div>
+                <p className="text-[11px] text-gray-600 leading-relaxed mb-3">
+                  3 months ago, I had zero inbound leads from LinkedIn.<br />
+                  Today, we're getting 40+ per month. 👇
+                </p>
+                <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1">
+                    <div className="flex -space-x-0.5">
+                      <div className="w-3.5 h-3.5 rounded-full bg-blue-500" />
+                      <div className="w-3.5 h-3.5 rounded-full bg-red-500" />
+                    </div>
+                    <span className="text-[9px] text-gray-400">2,847</span>
+                  </div>
+                  <span className="text-[9px] text-gray-400">184 comments</span>
+                </div>
+              </div>
+
+              {/* Email mockup — slides in from right */}
+              <div className="hero-anim-outbound bg-white rounded-xl shadow-xl shadow-black/15 p-4 relative">
+                <div className="absolute -top-2 left-3 bg-emerald-600 text-white text-[9px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Outbound
+                </div>
+
+                <div className="space-y-2.5 mt-1">
+                  {/* Email 1 — replied */}
+                  <div className="bg-emerald-50 border border-emerald-200/60 rounded-lg px-3 py-2">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-[10px] font-semibold text-gray-800">Re: Quick question</span>
+                      <span className="text-[8px] text-emerald-600 font-medium">Replied</span>
+                    </div>
+                    <p className="text-[9px] text-gray-500">I saw your post on LinkedIn — let's chat...</p>
+                  </div>
+
+                  {/* Email 2 — replied */}
+                  <div className="bg-emerald-50 border border-emerald-200/60 rounded-lg px-3 py-2">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-[10px] font-semibold text-gray-800">Re: Partnership idea</span>
+                      <span className="text-[8px] text-emerald-600 font-medium">Replied</span>
+                    </div>
+                    <p className="text-[9px] text-gray-500">Been following your content, interested...</p>
+                  </div>
+
+                  {/* Email 3 — opened */}
+                  <div className="bg-gray-50 border border-gray-200/60 rounded-lg px-3 py-2">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-[10px] font-semibold text-gray-800">Intro from Sarah</span>
+                      <span className="text-[8px] text-blue-500 font-medium">Opened</span>
+                    </div>
+                    <p className="text-[9px] text-gray-500">Your LinkedIn came up in our meeting...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Merge indicator — animated */}
+            <div className="hero-anim-merge flex items-center justify-center w-full max-w-md ml-auto mb-3">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-blue-400/30 to-blue-400/40" />
+              <div className="mx-3 w-8 h-8 rounded-full bg-blue-500/15 border border-blue-400/25 flex items-center justify-center">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 3v8m0 0l-2.5-2.5M7 11l2.5-2.5" stroke="#60A5FA" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="flex-1 h-px bg-gradient-to-l from-transparent via-blue-400/30 to-blue-400/40" />
+            </div>
+
+            {/* Campaign results — the output */}
+            <div className="hero-anim-results bg-white/[0.06] backdrop-blur-md border border-white/[0.1] rounded-xl p-5 w-full max-w-md ml-auto">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 hero-pulse-dot" />
                   <span className="text-xs font-medium text-emerald-300/80">Campaign Live</span>
                 </div>
-                <span className="text-[10px] text-blue-200/30 uppercase tracking-wider">Outbound</span>
+                <span className="text-[10px] text-blue-200/40 uppercase tracking-wider font-medium">Growth Engine</span>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
@@ -143,11 +192,6 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Decorative badge */}
-            <div className="absolute -left-4 top-1/2 -translate-y-1/2 bg-blue-500/10 backdrop-blur border border-blue-400/20 rounded-lg px-3 py-2 hidden lg:block">
-              <p className="text-[10px] text-blue-300/60 font-medium">Brand + Outbound</p>
-              <p className="text-[10px] text-blue-200/30">Compounding pipeline</p>
-            </div>
           </div>
         </div>
       </div>

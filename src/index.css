@@ -111,4 +111,64 @@
     background: #E0D5C4;
     outline: none;
   }
+
+  /* Hero animation sequence */
+  .hero-anim-badge {
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: heroFadeDown 0.6s ease-out 0.3s forwards;
+  }
+
+  .hero-anim-branding {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.95);
+    animation: heroSlideFromLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+  }
+
+  .hero-anim-outbound {
+    opacity: 0;
+    transform: translateX(30px) scale(0.95);
+    animation: heroSlideFromRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards;
+  }
+
+  .hero-anim-merge {
+    opacity: 0;
+    transform: scaleX(0);
+    animation: heroMerge 0.5s cubic-bezier(0.16, 1, 0.3, 1) 2.2s forwards;
+  }
+
+  .hero-anim-results {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    animation: heroResultsIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 2.6s forwards;
+  }
+
+  .hero-pulse-dot {
+    animation: heroPulse 2s ease-in-out 3.4s infinite;
+  }
+
+  @keyframes heroFadeDown {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes heroSlideFromLeft {
+    to { opacity: 1; transform: translateX(0) scale(1); }
+  }
+
+  @keyframes heroSlideFromRight {
+    to { opacity: 1; transform: translateX(0) scale(1); }
+  }
+
+  @keyframes heroMerge {
+    to { opacity: 1; transform: scaleX(1); }
+  }
+
+  @keyframes heroResultsIn {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes heroPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
 }
