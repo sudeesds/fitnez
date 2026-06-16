@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 
-const BRANDING_BASE = 750;
+const BRANDING_BASE = 850;
 const BRANDING_PER_POST = 50;
 const BRANDING_BASE_POSTS = 10;
 const ENGAGEMENT_COST = 300;
