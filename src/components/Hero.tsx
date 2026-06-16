@@ -102,7 +102,7 @@ export function Hero() {
               <div className="bg-white/[0.04] backdrop-blur border border-white/[0.08] rounded-full px-5 py-2.5 flex items-center gap-1.5 text-xs font-medium">
                 <span className={`px-2 py-0.5 rounded-full transition-all duration-500 ${
                   phase === 'branding' ? 'bg-blue-500/20 text-blue-300' : 'text-white/25'
-                }`}>Brand</span>
+                }`}>Branding</span>
                 <span className="text-white/15">+</span>
                 <span className={`px-2 py-0.5 rounded-full transition-all duration-500 ${
                   phase === 'outbound' ? 'bg-emerald-500/20 text-emerald-300' : 'text-white/25'
